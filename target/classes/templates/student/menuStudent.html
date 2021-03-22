@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">    
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/styles.css">    
+    <title>Devs University - Student Control Panel</title>
+</head>
+<body >    
+	<spam th:if="${session.stu != null && stu.type.equals(STUDENT)}">Bienvenido/a Administrador<spam class="font-italic" th:text="${session.stu.name + session.stu.surname"></spam></spam>
+    <header> </header>
+
+    <main>
+        <section class="welcome">
+            
+            <!--INICIA WELCOM-->
+                <div class="row d-flex justify-content-center align-items-center pb-4 ">
+                    <img src="logos/logo.png" width="20%" alt="">
+                    <p class="titleWelcome text-white">Student Control Panel</p>
+                </div>
+
+                <div class="row d-flex justify-content-center align-items-center pb-4">
+                    <a href="html/student/registerStudent.html" type="button" class="btn btn-success">Listado de Mis Materias </a>
+                    <a href="html/student/registerStudent.html" type="button" class="btn btn-warning ml-5">Lista de Todas las Materias</a>
+                    <a href="html/student/editStudent.html" type="button" class="btn btn-danger ml-5">Inscripción a Materias</a>
+                    <a href="html/student/materialStudent.html" type="button" class="btn btn-dark ml-5">Editar Perfil</a>
+                    <a href="html/student/materialStudent.html" type="button" class="btn btn-light ml-5">Eliminar Cuenta</a>
+                </div>
+                
+                <a href="../../index.html" type="button" class="btn btn-primary ml-5">Return Start</a>
+
+        </section>
+
+    </main>
+
+    <footer></footer>    
+    
+    <script src="js/requeridos/jquery-3.3.1.min.js"></script>
+    <script src="js/requeridos/popper.min.js"></script>
+    <script src="js/requeridos/bootstrap.min.js"></script>
+    <script src="js/requeridos/sweetalert2.all.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>    
+</body>
+</html>

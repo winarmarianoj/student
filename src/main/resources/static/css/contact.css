@@ -1,0 +1,70 @@
+.contacto{
+    background-image: url(../img/fondo.jpg);
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    box-shadow: 2px 2px 10px #999;
+    margin: 0;
+    padding: 0;
+    font-family: 'Open Sans', sans-serif;
+    height: 100vh;
+}
+
+#titleContacts{
+  font-size: 3rem;
+}
+.bd-placeholder-img {
+  font-size: 1.125rem;
+  text-anchor: middle;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.labels{
+  justify-content: center;
+  font-family: Verdana;
+  font-size: 20px;
+  color: orange;
+}
+.titleRegister{
+  background: black;
+  max-width: 800px;
+  margin-left: 27%;
+}
+.backForm{
+  background: black;
+}
+.msgBtn{
+    font-family: Verdana;
+    font-size: 2rem;
+    color: orange;
+}
+.txtRegister{    
+  color: whitesmoke;
+  text-align: center;
+}
+
+/* MEDIAS QUERIES*/
+
+@media (min-width: 450px) {
+    .contacto{max-width: 380px;}    
+}
+
+@media (min-width: 600px) {
+    .contacto{max-width: 540px;}
+}
+  
+@media (min-width: 768px) {
+    .contacto{max-width: 720px;}
+}  
+
+@media (min-width: 992px) {
+    .contacto{max-width: 960px;}
+}
+
+@media (min-width: 1200px) {
+    .contacto{max-width: 100%;}
+}

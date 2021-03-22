@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>Devs University - New Student</title>
+    
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">    
+        <link rel="stylesheet" href="../css/contact.css"> 
+    </head>
+
+    <body class="contacto bg-light">           
+
+        <header></header>        
+
+        <!--Init Main-->
+        <main>
+
+            <section class="container-fluid">
+
+                <!--Init Form -->
+                <section>                    
+                    <div class="py-3 pt-2 text-muted text-center text-small">
+                        <ul class="titleRegister list-inline">
+                            <li class="list-inline-item"><img src="../logos/logo.png" width="50%" alt=""></li>
+                            <li class="list-inline-item text-center"><a href="#"></a><p id="titleContacts">Formulario de Registro como Estudiante</p></li>
+                        </ul>
+                    </div>
+                    
+                    <!--INIT DATA-->
+                    <div class="row justify-content-center" >            
+                                            
+                        <div class="col-md-8 order-md-1">                       
+        
+                            <!--INIT FORM ACCOUNT-->
+                            <form th:object="${register}" th:action="@{/register/student}" method="POST"  class="needs-validation" novalidate>
+
+                                <div class="errorblock" th:if="${#fields.hasErrors('*')}">
+                                    <ul>
+                                        <li th:each="err : ${#fields.errors('*')}"
+                                            th:text="${err}">Input is incorrect</li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="row">
+                                        
+                                        <div class="col-md-4 mb-5">
+                                            <label class="labels" for="name" >Nombre</label>
+                                            <input th:field="*{name}" type="text" class="form-control" id="name" placeholder="" value="" required>
+                                        </div>
+                                        <div class="col-md-4 mb-5">
+                                            <label class="labels" for="surname">Apellido</label>
+                                            <input th:field="*{surname}" type="text" class="form-control" id="surname" placeholder=>
+                                        </div>                                        
+                                        <div class="col-md-4 mb-5">
+                                            <label class="labels" for="phone">Teléfono</label>
+                                            <input th:field="*{phone}" type="text" class="form-control" id="phone" placeholder=>
+                                        </div>
+                                        <div class="col-md-4 mb-5">
+                                            <label class="labels" for="email">Email</label>
+                                            <input th:field="*{email}" type="email" class="form-control" id="email" placeholder=>
+                                        </div>
+                                        <div class="col-md-4 mb-5">
+                                            <label class="labels" for="dni">D.N.I.</label>
+                                            <input th:field="*{dni}" type="text" class="form-control" id="dni" placeholder=>
+                                        </div>
+                                        <div class="col-md-4 mb-5">
+                                            <label class="labels" for="legajo">Nro Legajo</label>
+                                            <input th:field="*{legajo}" type="text" class="form-control" id="legajo" placeholder=>
+                                        </div>                                        
+                                        <div class="col-md-4 mb-5">
+                                            <label class="labels" for="password">Password</label>
+                                            <input th:field="*{password}" type="password" class="form-control" id="password" placeholder=>
+                                        </div>
+                                        
+                                </div>                                
+
+                                <!-- BUTTON REGISTER BLUE -->
+                                <input type="submit" id="btnRegistrateStudent" value="Register Student" class="btn btn-success"/> <!-- onclick="fun(btnRegistrateStudent)" -->
+                                
+                                <a th:href="@{/student/loginForm}" type="button" class="btn btn-primary ml-5">Return Student Login</a>
+
+                            </form>
+                            <!--END FORM ACCOUNT-->                            
+                        </div>                           
+                    </div>
+                    <!--END DATA-->
+
+                    <!--Inicio del Footer-->
+                    <footer class="col-12 s12 m6 institucional">
+                        <div class="col-12 s12 m6 text-muted text-center text-small">
+                            <div class="datos">
+                                <p class="">&copy; 2021 Devs University</p>
+                                <ul class="list-inline">
+                                    <li class="list-inline-item"><a href="../devsUniversityWe.html">We</a></li>
+                                    <li class="list-inline-item"><a href="../devsUniversityBook.html">Book</a></li>
+                                    <li class="list-inline-item"><a href="../devsUniversitySupport.html">Support</a></li>
+                                </ul>
+                                <ul>
+                                    <li class=" list-inline-item"><img src="../logos/facebook.png" alt=""></li>
+                                    <li class=" list-inline-item"><img src="../logos/instagram.png" alt=""></li>         
+                                    <li class=" list-inline-item"><img src="../logos/twiter.png" alt=""></li>
+                                    <li class=" list-inline-item"><img src="../logos/linkedin.png" alt=""></li>
+                                    <li class=" list-inline-item"><img src="../logos/whatsapp.png" alt=""></li>
+                                    <li class=" list-inline-item"><img src="../logos/youtube.png" alt=""></li>
+                                </ul>            
+                            </div>
+                        </div>
+                    </footer>
+                    <!--Fin del Footer-->
+
+                </section> 
+                <!--END FORM-->
+
+            </section>
+
+        </main>
+        <!--END MAIN-->        
+
+        <script src="../js/register.js"></script>
+        <script src="../js/uiFunctions.js"></script>
+        <script src="../js/uiMessages.js"></script>
+        <script src="../js/requeridos/jquery-3.3.1.min.js"></script>
+        <script src="../js/requeridos/popper.min.js"></script>
+        <script src="../js/requeridos/bootstrap.min.js"></script>
+        <script src="../js/requeridos/sweetalert2.all.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    </body>
+
+</html>
