@@ -11,7 +11,6 @@ import com.marianowinar.repository.AccountRepository;
 import com.marianowinar.service.exception.account.InvalidPasswordAccountException;
 import com.marianowinar.service.exception.account.NullAccountException;
 import com.marianowinar.service.logger.Errors;
-import com.marianowinar.service.logger.ListErrors;
 import com.marianowinar.service.util.PasswordEncryptor;
 import com.marianowinar.service.validator.ValidAccount;
 import com.marianowinar.service.validator.ValidPass;
@@ -27,7 +26,6 @@ public class AccountService implements Services<Account>{
 	private PasswordEncryptor encryptor;
 	private Account acc;
 	private ValidPass validatePass;
-	private ListErrors listErrors;
 
 	public AccountService() {
 		this.vacc = ValidAccount.getInstance();

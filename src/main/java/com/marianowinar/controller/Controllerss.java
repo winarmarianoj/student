@@ -17,7 +17,6 @@ public interface Controllerss<T> {
 	public String getIdChange(Model model, ModelMap mp);
 	public String getUpdate(Model model);
 	public String getIdDelete(Model model, ModelMap mp);
-	public String getDelete(Model model);
 	public String getIdAddMaterial(Model model, ModelMap mp);
 	public String getIdDeleteMaterial(Model model, ModelMap mp);
 	

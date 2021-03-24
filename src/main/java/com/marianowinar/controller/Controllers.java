@@ -12,7 +12,7 @@ import com.marianowinar.model.Account;
 import com.marianowinar.model.forms.Register;
 
 @Controller
-public interface Controllers {
+public interface Controllers{
 	
 	/*
 	 * GET FUNCTIONS

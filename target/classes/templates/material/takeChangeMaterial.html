@@ -44,13 +44,13 @@
               <p>Profile</p>
             </a>
           </li>
-          <li class="active">
-            <a href="/professor/professorControlPanel">          
+          <li >
+            <a href="/professor/professorControlPanel">            
               <i class="tim-icons icon-atom"></i>
               <p>Professor</p>
             </a>
           </li>
-          <li>
+          <li class="active">
             <a href="/material/materialControlPanel">
               <i class="tim-icons icon-pin"></i>
               <p>Material</p>
@@ -88,7 +88,7 @@
                 <span class="navbar-toggler-bar bar3"></span>
               </button>
             </div>
-            <p class="navbar-brand">Professor Control Panel</p>
+            <p class="navbar-brand">Material Control Panel</p>
           </div>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-bar navbar-kebab"></span>
@@ -118,34 +118,32 @@
       <div class="content">
 
         <section class="col-12 offset-fixed">
-            <a class="btn btn-yellow" href="/professor/createProfessor">Create Professor</a>
-            <a class="btn btn-yellow" href="/professor/takeIdChangeProfessor">Update Professor</a>
-            <a class="btn btn-yellow" href="/professor/takeIdDeleteProfessor">Delete Professor</a>
-            <a class="btn btn-yellow" href="/professor/takeIdAddMaterialProfessor">Add Material</a>
-            <a class="btn btn-yellow" href="/professor/takeIdDeleteMaterialProfessor">Delete Material</a>
-        </section>   
+            <a class="btn btn-yellow" href="/material/createMaterial">Create Material</a>
+            <a class="btn btn-yellow" href="/material/takeIdChangeMaterial">Update Material</a>
+            <a class="btn btn-yellow" href="/material/takeIdDeleteMaterial">Delete Material</a>
+        </section>  
         
         <section class="col-12 offset-fixed my-5">
         
-        <h4>PROFESSOR OBJECT ONLY USE UPDATE OR DELETE</h4>
+            <h4>MATERIAL OBJECT ONLY USE UPDATE OR DELETE</h4>
         
         	<!--Inicio de Solicitud de su Profile -->
             <div class="card card-plain">
-            	<form th:object="${professor}" th:action="@{/professor/sendIdDeleteProfessor}" method="POST">
+            	<form th:object="${material}" th:action="@{/material/sendIdChangeMaterial}" method="POST">
             	
           			<div class="form-group">
-                        <input th:field="*{personId}" type="text" id="id" name="id"
+                        <input th:field="*{name}" type="text" id="name" name="name"
                             class="form-control form-control-sm bg-light" 
-                            placeholder="PersonID" required="">
+                            placeholder="Name" required="">
                     </div>                    
                         
                     <!-- BUTTON REGISTER BLUE -->
-                    <input type="submit" id="btnRegistrateAdmin" value="Send ID Professor Delete" class="btn btn-yellow"/>                                        	
+                    <input type="submit" id="" value="Send Name Material Change" class="btn btn-yellow"/>                                        	
             	</form>
             </div>
             <!--Fin de Solicitud de su Profile -->            
                       
-        </section>
+        </section>       
         
         <section class="col-12 offset-fixed my-4">
         
@@ -154,32 +152,30 @@
                       <!-- INIT TABLE -->
                       <div class="col-md-12 col-md-offset-2">
                         <div class="description">
-                          <h2>LISTADO DE PROFESORES</h2>
+                          <h2>LISTADO DE MATERIAS</h2>
                         </div>
                         
-                        <div class="fresh-table full-color-green">
+                        <div class="fresh-table full-color-red">
                         <!-- full-color-blue, full-color-azure, full-color-green, full-color-red, full-color-orange-->
                           
                           <table id="fresh-table" class="table">
                             <thead>
                               <th>ID</th>
                               <th>NAME</th>
-                              <th>SURNAME</th>
-                              <th>PHONE</th>
-                              <th>EMAIL</th>
-                              <th>TYPE</th>
-                              <th>ACTIVE</th>
+                              <th>HOUR</th>
+                              <th>CAPACITY</th>
+                              <th>SUBSCRIBED</th>
+                              <th>DESCRIPTION</th>
 
                             </thead>
                             <tbody>
-                                <tr data-th-each="professor : ${professors}">
-                                    <td data-th-text="${professor.personId}"></td>
-                                    <td data-th-text="${professor.name}"></td>
-                                    <td data-th-text="${professor.surname}"></td>
-                                    <td data-th-text="${professor.phone}"></td>
-                                    <td data-th-text="${professor.email}"></td>
-                                    <td data-th-text="${professor.type}"></td>
-                                    <td data-th-text="${professor.active}"></td>
+                                <tr data-th-each="material : ${materials}">
+                                    <td data-th-text="${material.materialId}"></td>
+                                    <td data-th-text="${material.name}"></td>
+                                    <td data-th-text="${material.hour}"></td>
+                                    <td data-th-text="${material.capacity}"></td>
+                                    <td data-th-text="${material.subscribed}"></td>
+                                    <td data-th-text="${material.description}"></td>
                                 </tr>
                             </tbody>
                           </table>

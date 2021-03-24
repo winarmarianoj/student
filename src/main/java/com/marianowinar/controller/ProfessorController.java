@@ -62,19 +62,12 @@ public class ProfessorController implements Controllerss<Professor>{
 		mp.put("professors", profServ.viewAll());
 		return "/professor/takeDeleteProfessor";
 	}
-	
 
-	@Override
-	@GetMapping("/deleteProfessor")
-	public String getDelete(Model model) {
-		model.addAttribute("professor", new Professor());
-		return "/professor/deleteProfessor";
-	}	
 	
 	@Override
 	@GetMapping("/takeIdAddMaterialProfessor")
 	public String getIdAddMaterial(Model model, ModelMap mp) {
-		model.addAttribute("professor", new Professor());
+		model.addAttribute("profmaterial", new Profmaterial());
 		mp.put("materials", matServ.viewAll());
 		return "/professor/takeIdAddMaterialProfessor";
 	}
@@ -82,7 +75,7 @@ public class ProfessorController implements Controllerss<Professor>{
 	@Override
 	@GetMapping("/takeIdDeleteMaterialProfessor")
 	public String getIdDeleteMaterial(Model model, ModelMap mp) {
-		model.addAttribute("professor", new Professor());
+		model.addAttribute("profmaterial", new Profmaterial());
 		mp.put("materials", matServ.viewAll());
 		return "/professor/takeIdDeleteMaterialProfessor";
 	}

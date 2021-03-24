@@ -87,12 +87,12 @@ public class AdminController implements Controllers{
 		String destiny = "";
 		
 		if(result.hasErrors()) {
-			destiny= "redirect:/registered/registerAdmin";
+			destiny= "redirect:/admins/registerAdmin";
 		}else {
 			if(perServ.createAdmin(entity)) {
-				destiny = "redirect:/admin/loginForm";
+				destiny = "redirect:/admins/loginForm";
 			}else {			
-				destiny = "redirect:/registered/registerAdmin";
+				destiny = "redirect:/admins/registerAdmin";
 			}	
 		}
 		return destiny;
@@ -106,7 +106,7 @@ public class AdminController implements Controllers{
 	public String postLogin(@ModelAttribute Account entity, BindingResult result, HttpSession session) {
 		String destiny = "";
 		if(result.hasErrors()) {
-			destiny= "redirect:/admin/loginForm";
+			destiny= "redirect:/admins/loginForm";
 		}else{			
 			Person per = perServ.login(entity);
 			session.setAttribute("admin", per);

@@ -92,7 +92,7 @@ public class MaterialService implements Services<Material>{
 	/*
 	 * Busca si una Materia existe o no en la BD
 	 */
-	private boolean searchMaterial(Material aux) {
+	public boolean searchMaterial(Material aux) {
 		boolean res = false;
 		List<Material> listMaterial = viewAll();
 		for(Material ele : listMaterial) {
@@ -109,7 +109,7 @@ public class MaterialService implements Services<Material>{
 	 * objeto professor
 	 */
 	public Material searchingMaterial(Profmaterial entity) {
-		Material aux = null;
+		Material aux = new Material();
 		List<Material> listMat = viewAll();
 		for(Material ele : listMat) {
 			if(ele.getId() == entity.getMaterialId()) {
@@ -117,5 +117,28 @@ public class MaterialService implements Services<Material>{
 			}
 		}
 		return aux;
+	}
+
+	public Material searchNameMaterial(Material entity) {
+		Material aux = new Material();
+		List<Material> listMat = viewAll();
+		for(Material ele : listMat) {
+			if(ele.getName().equals(entity.getName())) {
+				aux = ele;
+			}
+		}
+		return aux;
+	}
+
+	public boolean changeMaterial(Material entity) {
+		boolean res = false;
+		List<Material> listMat = viewAll();
+		for(Material ele : listMat) {
+			if(ele.getId() == entity.getId()) {
+				ele = entity;
+				res = true;
+			}
+		}
+		return res;
 	}
 }

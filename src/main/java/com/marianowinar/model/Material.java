@@ -18,13 +18,13 @@ public class Material implements Serializable{
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "mat_id", unique=true, nullable=false)
+	@Column(name = "materialId", unique=true, nullable=false)
 	private Long materialId;	
 	
 	private String name;
 	private String hour;
-	private int capacity;
-	private int subscribed;
+	private String capacity;
+	private String subscribed;
 	private String description;
 		
 	@ManyToMany(mappedBy = "materials")
@@ -32,7 +32,7 @@ public class Material implements Serializable{
 	
 	public Material() {}
 	
-	public Material(Long materialId, String name, String hour, int capacity, String description, List<Person> persons, int subscribed) {
+	public Material(Long materialId, String name, String hour, String capacity, String description, List<Person> persons, String subscribed) {
 		this.materialId = materialId;
 		this.name = name;
 		this.hour = hour;
@@ -62,11 +62,11 @@ public class Material implements Serializable{
 		this.hour = hour;
 	}
 
-	public int getCapacity() {
+	public String getCapacity() {
 		return capacity;
 	}
 
-	public void setCapacity(int capacity) {
+	public void setCapacity(String capacity) {
 		this.capacity = capacity;
 	}
 
@@ -78,11 +78,11 @@ public class Material implements Serializable{
 		this.description = descripcion;
 	}
 	
-	public int getSubscribed() {
+	public String getSubscribed() {
 		return subscribed;
 	}
 
-	public void setSubscribed(int subscribed) {
+	public void setSubscribed(String subscribed) {
 		this.subscribed = subscribed;
 	}
 	

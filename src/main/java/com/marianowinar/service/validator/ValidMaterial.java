@@ -14,24 +14,19 @@ public class ValidMaterial {
 		if(validMaterial == null) validMaterial = new ValidMaterial();
 		
 		return validMaterial;
-	}
-	
-	public boolean validCapacityMaterial(Material mat) throws InvalidCapacityMaterialException {
-		boolean res = validCapacity(mat.getCapacity());
-		if(!res)throw new InvalidCapacityMaterialException("Invalid support capacity or null");
-		
-		return res;
-	}
+	}	
 	
 	public boolean validNameMaterial(Material mat) throws InvalidNameMaterialException, InvalidCapacityMaterialException {
 		boolean res = validName(mat.getName());
 		res &= validName(mat.getHour());
-		res &= validCapacityMaterial(mat);
+		res &= validName(mat.getCapacity());
+		res &= validName(mat.getDescripcion());
+		res &= validName(mat.getSubscribed());
+		
 		if(!res)throw new InvalidNameMaterialException("Invalid name material or null");
 		
 		return res;
-	}
+	}	
 	
-	private boolean validCapacity(int capacity) {return capacity >= 0 && capacity <= 100;}
 	private boolean validName(String name) {return name != null || name != "";}	
 }

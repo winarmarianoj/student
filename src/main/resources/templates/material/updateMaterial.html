@@ -44,13 +44,13 @@
               <p>Profile</p>
             </a>
           </li>
-          <li class="active">
-            <a href="/professor/professorControlPanel">          
+          <li >
+            <a href="/professor/professorControlPanel">            
               <i class="tim-icons icon-atom"></i>
               <p>Professor</p>
             </a>
           </li>
-          <li>
+          <li class="active">
             <a href="/material/materialControlPanel">
               <i class="tim-icons icon-pin"></i>
               <p>Material</p>
@@ -88,7 +88,7 @@
                 <span class="navbar-toggler-bar bar3"></span>
               </button>
             </div>
-            <p class="navbar-brand">Professor Control Panel</p>
+            <p class="navbar-brand">Material Control Panel</p>
           </div>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-bar navbar-kebab"></span>
@@ -118,76 +118,66 @@
       <div class="content">
 
         <section class="col-12 offset-fixed">
-            <a class="btn btn-yellow" href="/professor/createProfessor">Create Professor</a>
-            <a class="btn btn-yellow" href="/professor/takeIdChangeProfessor">Update Professor</a>
-            <a class="btn btn-yellow" href="/professor/takeIdDeleteProfessor">Delete Professor</a>
-            <a class="btn btn-yellow" href="/professor/takeIdAddMaterialProfessor">Add Material</a>
-            <a class="btn btn-yellow" href="/professor/takeIdDeleteMaterialProfessor">Delete Material</a>
-        </section>   
+            <a class="btn btn-yellow" href="/material/createMaterial">Create Material</a>
+            <a class="btn btn-yellow" href="/material/takeIdChangeMaterial">Update Material</a>
+            <a class="btn btn-yellow" href="/material/takeIdDeleteMaterial">Delete Material</a>
+        </section>        
         
         <section class="col-12 offset-fixed my-5">
         
-        <h4>PROFESSOR OBJECT ONLY USE UPDATE OR DELETE</h4>
+        <h4>MATERIAL OBJECT ONLY USE UPDATE OR DELETE</h4>
         
-        	<!--Inicio de Solicitud de su Profile -->
-            <div class="card card-plain">
-            	<form th:object="${professor}" th:action="@{/professor/sendIdDeleteProfessor}" method="POST">
-            	
-          			<div class="form-group">
-                        <input th:field="*{personId}" type="text" id="id" name="id"
-                            class="form-control form-control-sm bg-light" 
-                            placeholder="PersonID" required="">
-                    </div>                    
-                        
-                    <!-- BUTTON REGISTER BLUE -->
-                    <input type="submit" id="btnRegistrateAdmin" value="Send ID Professor Delete" class="btn btn-yellow"/>                                        	
-            	</form>
-            </div>
-            <!--Fin de Solicitud de su Profile -->            
-                      
-        </section>
-        
-        <section class="col-12 offset-fixed my-4">
-        
-        	<div class="row">
+        	<div class="py-3 pt-2 text-muted text-center text-small">
+                        <ul class="titleRegister list-inline">
+                            <li class="list-inline-item"><img src="../logos/logo.png" width="50%" alt=""></li>
+                            <li class="list-inline-item text-center "><a href="#"></a><p id="titleContacts">Cambio de Datos de una Materia</p></li>
+                        </ul>
+                    </div>
                     
-                      <!-- INIT TABLE -->
-                      <div class="col-md-12 col-md-offset-2">
-                        <div class="description">
-                          <h2>LISTADO DE PROFESORES</h2>
-                        </div>
-                        
-                        <div class="fresh-table full-color-green">
-                        <!-- full-color-blue, full-color-azure, full-color-green, full-color-red, full-color-orange-->
-                          
-                          <table id="fresh-table" class="table">
-                            <thead>
-                              <th>ID</th>
-                              <th>NAME</th>
-                              <th>SURNAME</th>
-                              <th>PHONE</th>
-                              <th>EMAIL</th>
-                              <th>TYPE</th>
-                              <th>ACTIVE</th>
-
-                            </thead>
-                            <tbody>
-                                <tr data-th-each="professor : ${professors}">
-                                    <td data-th-text="${professor.personId}"></td>
-                                    <td data-th-text="${professor.name}"></td>
-                                    <td data-th-text="${professor.surname}"></td>
-                                    <td data-th-text="${professor.phone}"></td>
-                                    <td data-th-text="${professor.email}"></td>
-                                    <td data-th-text="${professor.type}"></td>
-                                    <td data-th-text="${professor.active}"></td>
-                                </tr>
-                            </tbody>
-                          </table>
-                        </div>                    
-                      </div>
-                      <!--END FORM OR TABLE -->
-                  </div>
+                    <!--INIT DATA-->
+                    <div class="row justify-content-center" >            
+                                            
+                        <div class="col-md-8 order-md-1">                       
         
+                            <!--INIT FORM ACCOUNT-->
+                            <form th:object="${material}" th:action="@{/material/changeMaterial}" method="POST"  class="needs-validation" novalidate>
+                                <div class="row">
+                                        
+                                        <div class="col-md-4 mb-5">
+                                            <label class="labels" for="name" >Nombre</label>
+                                            <input th:field="*{name}" type="text" class="form-control" id="name" value="${material.name}">
+                                        </div>
+                                        <div class="col-md-4 mb-5">
+                                            <label class="labels" for="hour">Hora de Inicio</label>
+                                            <input th:field="*{hour}" type="text" class="form-control" id="hour" value="${material.hour}">
+                                        </div>                                        
+                                        <div class="col-md-4 mb-5">
+                                            <label class="labels" for="capacity">Capacidad de la Materia</label>
+                                            <input th:field="*{capacity}" type="text" class="form-control" id="capacity" value="${material.capacity}">
+                                        </div>
+                                        <div class="col-md-4 mb-5">
+                                            <label class="labels" for="subscribed">Suscripciones</label>
+                                            <input th:field="*{subscribed}" type="text" class="form-control" id="subscribed" value="${material.subscribed}">
+                                        </div>
+                                        <!--  <div class="col-md-4 mb-5">
+                                            <label class="labels" for="description">Descripción</label>
+                                            <input th:field="*{description}" type="text" class="form-control" id="desc" value="${material.description}">
+                                        </div>                                       
+                                        -->
+                                </div>                                
+
+                                <!-- BUTTON REGISTER BLUE -->
+                                <input type="submit" id="btnCreateProfessor" value="Professor Data Change" class="btn btn-success"/>  
+                                
+                                
+                                <a th:href="@{/material/materialControlPanel}" type="button" class="btn btn-primary ml-5">Return Material Control Panel</a>
+
+                            </form>
+                            <!--END FORM ACCOUNT-->                            
+                        </div>                           
+                    </div>
+                    <!--END DATA-->
+                      
         </section>
 
       </div>
