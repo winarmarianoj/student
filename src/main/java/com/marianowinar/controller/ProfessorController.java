@@ -1,5 +1,8 @@
 package com.marianowinar.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,12 +16,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.marianowinar.model.Material;
 import com.marianowinar.model.Professor;
 import com.marianowinar.model.forms.Profmaterial;
+import com.marianowinar.model.forms.Takeid;
 import com.marianowinar.service.application.MaterialService;
 import com.marianowinar.service.application.ProfessorService;
 
 @Controller
 @RequestMapping(value = "/professor")
 public class ProfessorController implements Controllerss<Professor>{
+		
+	private Takeid num;
+	
+	public ProfessorController() {this.num = new Takeid();}
 	
 	@Autowired
 	private ProfessorService profServ;	
@@ -28,7 +36,7 @@ public class ProfessorController implements Controllerss<Professor>{
 		
 	@Override
 	@GetMapping("/professorControlPanel")
-	public String getControlPanel(ModelMap mp) {
+	public String getControlPanel(ModelMap mp) {		
 		mp.put("professors", profServ.viewAll());
 		return "/professor/professorControlPanel";
 	}
@@ -79,6 +87,26 @@ public class ProfessorController implements Controllerss<Professor>{
 		mp.put("materials", matServ.viewAll());
 		return "/professor/takeIdDeleteMaterialProfessor";
 	}
+	
+	@GetMapping("/takeIdProfessorListMat")
+	public String getIdProfessorListMat(Model model, ModelMap mp) {
+		model.addAttribute("takeid", new Takeid());
+		mp.put("professors", profServ.viewAll());
+		return "/professor/takeIdProfessorListMaterial";
+	}
+	
+	@GetMapping("/listProfessorMaterial")
+	public String getListProfMat(Model model, ModelMap mp) {
+		Professor profesor = profServ.searchProfessorId(this.num.getNum());
+		List<Material> listMat = profesor.getListMaterial();
+		mp.put("materialss", listMat);
+		
+		List<Professor> list = new ArrayList<>();
+		list.add(profesor);
+		mp.put("professorss", list);
+		return "/professor/profListMat";
+	}
+	
 	
 	/*
 	 * CREATE PROFESSOR
@@ -171,9 +199,11 @@ public class ProfessorController implements Controllerss<Professor>{
 	        destiny = "redirect:/professor/takeIdAddMaterialProfessor";
 	    }else{
 	        Material mat = matServ.searchingMaterial(entity);
-	        Professor prof = profServ.searchingProfessor(entity);
-	        prof.addMateial(mat);
-	        if(profServ.update(prof)) {
+	        Professor prof = profServ.searchProfessorId(entity.getPersonId());
+	        prof.addMaterial(mat);
+	        mat.addPerson(prof);
+	        
+	        if(profServ.create(prof) && matServ.create(mat)) {
 	        	destiny = "redirect:/professor/professorControlPanel";
 	        }else {
 	        	destiny = "redirect:/professor/takeIdAddMaterialProfessor";
@@ -193,8 +223,8 @@ public class ProfessorController implements Controllerss<Professor>{
 	        destiny = "redirect:/professor/takeIdAddMaterialProfessor";
 	    }else{
 	        Material mat = matServ.searchingMaterial(entity);
-	        Professor prof = profServ.searchingProfessor(entity);
-	        if(prof.removeMaterial(entity.getMaterialId())) {
+	        Professor prof = profServ.take(entity.getPersonId());
+	        if(prof.removeMaterial(mat.getId()) && mat.removePerson(prof.getPersonId())) {
 	        	if(profServ.update(prof)) {
 		        	destiny = "redirect:/professor/professorControlPanel";
 		        }else {
@@ -203,5 +233,32 @@ public class ProfessorController implements Controllerss<Professor>{
 	        }
 	    }
 	    return destiny;
+	}	
+	
+	@PostMapping(value = "/idProfessorListMaterial")
+	public String postProfessorListMaterial(Takeid entity, BindingResult result) {
+		String destiny = "";
+	    if(result.hasErrors()){		        
+	        destiny = "redirect:/professor/takeIdProfessorListMaterial";
+	    }else{
+	        this.setNum(entity);
+	        destiny = "redirect:/professor/listProfessorMaterial";
+	    }
+	    return destiny;
 	}
+	
+	
+
+	/*
+	 * SETERS Y GETERS
+	 */
+	public Takeid getNum() {
+		return num;
+	}
+
+	public void setNum(Takeid num) {
+		this.num = num;
+	}
+	
+	
 }

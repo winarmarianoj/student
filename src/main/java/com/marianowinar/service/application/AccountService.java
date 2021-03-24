@@ -6,12 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.marianowinar.model.Account;
-import com.marianowinar.model.forms.Register;
 import com.marianowinar.repository.AccountRepository;
 import com.marianowinar.service.exception.account.InvalidPasswordAccountException;
 import com.marianowinar.service.exception.account.NullAccountException;
 import com.marianowinar.service.logger.Errors;
-import com.marianowinar.service.util.PasswordEncryptor;
 import com.marianowinar.service.validator.ValidAccount;
 import com.marianowinar.service.validator.ValidPass;
 
@@ -23,34 +21,25 @@ public class AccountService implements Services<Account>{
 	
 	private ValidAccount vacc;
 	private Errors errors;
-	private PasswordEncryptor encryptor;
-	private Account acc;
 	private ValidPass validatePass;
 
 	public AccountService() {
 		this.vacc = ValidAccount.getInstance();
 		this.errors = Errors.getInstance();
-		this.encryptor = PasswordEncryptor.getInstance();
 		this.validatePass = ValidPass.getInstance();
 	}
 
 	@Override
 	public boolean create(Account entity) {
-		boolean res = false;		
-		String passEncrypted = "";		
+		boolean res = false;	
 				
 		try {
 			if(validatePass.validatePass(entity.getPassword())) {
-				passEncrypted = encryptor.generateSecurePassword(entity.getPassword());
-				entity.setPassword(passEncrypted);
-			}
-			if(!searchAccount(entity)) {
 				if(vacc.validCreateAccount(entity)) {
-					entity.setActive(false);
 					accRepo.save(entity);
 					res = true;
-				}
-			}
+				}	
+			}			
 		}catch(NullAccountException | InvalidPasswordAccountException e) {
 			errors.logError(e.getMessage());
 		}
@@ -59,9 +48,7 @@ public class AccountService implements Services<Account>{
 
 	@Override
 	public boolean update(Account entity) {
-		boolean res = true;
-		accRepo.save(entity);
-		return res;
+		return create(entity);
 	}
 
 	@Override
@@ -95,14 +82,7 @@ public class AccountService implements Services<Account>{
 	public Errors getErrors() {
 		return errors;
 	}
-
-	public PasswordEncryptor getEncryptor() {
-		return encryptor;
-	}	
 	
-	public Account getAcc() {
-		return acc;
-	}
 	
 	/*
 	 * METHODS AND FUNCTIONS
@@ -138,6 +118,34 @@ public class AccountService implements Services<Account>{
 			}
 		}
 		return res;
+	}
+	
+	/*
+	 * Logout 
+	 */	
+	public void logout(Account entity) {
+		List<Account> listAcc = viewAll();
+		for(Account ele : listAcc) {
+			if(ele.getDni().equals(entity.getDni()) && ele.getLegajo().equals(entity.getLegajo())) {
+				ele.setActive(false);
+				update(ele);
+				break;
+			}
+		}		
+	}
+
+	/*
+	 * LOGIN
+	 */
+	public void login(Account entity) {		
+		List<Account> listAcc = viewAll();
+		for(Account ele : listAcc) {
+			if(ele.getDni().equals(entity.getDni()) && ele.getLegajo().equals(entity.getLegajo())) {
+				ele.setActive(true);
+				update(ele);
+				break;
+			}
+		}		
 	}	
 	
 	

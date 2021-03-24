@@ -138,22 +138,20 @@
                           
                           <table id="fresh-table" class="table">
                             <thead>
-                              <!-- <th>ID</th> -->
                               <th>NAME</th>
                               <th>HOUR</th>
                               <th>CAPACITY</th>
                               <th>SUBSCRIBED</th>
-                              <th>DESCRIPTION</th>
+                              <th>DETAIL</th>
 
                             </thead>
                             <tbody>
                                 <tr data-th-each="material : ${materials}">
-                                    <!-- <td data-th-text="${material.materialId}"></td> -->
                                     <td data-th-text="${material.name}"></td>
                                     <td data-th-text="${material.hour}"></td>
                                     <td data-th-text="${material.capacity}"></td>
                                     <td data-th-text="${material.subscribed}"></td>
-                                    <!-- <td data-th-text="${material.description}"></td> -->
+                                    <td data-th-text="${material.detail}"></td>
                                 </tr>
                             </tbody>
                           </table>

@@ -25,10 +25,12 @@ public class MaterialService implements Services<Material>{
 	
 	private ValidMaterial vmat;
 	private Errors errors;
+	private Material material;
 
 	public MaterialService() {
 		this.vmat = ValidMaterial.getInstance();
 		this.errors = Errors.getInstance();
+		this.material = new Material();
 	}
 
 	@Override
@@ -47,21 +49,14 @@ public class MaterialService implements Services<Material>{
 
 	@Override
 	public boolean update(Material entity) {
-		boolean res = false;
-		if(create(entity)) res = true;
-		
-		return res;
+		return create(entity);
 	}
 
 	@Override
 	public boolean delete(Long id) {
-		boolean res = false;
 		Material aux = take(id);
 		matRepo.delete(aux);
-		
-		if(!searchMaterial(aux)) res = true;
-		
-		return res;
+		return searchMaterial(aux);
 	}	
 
 	@Override
@@ -109,25 +104,23 @@ public class MaterialService implements Services<Material>{
 	 * objeto professor
 	 */
 	public Material searchingMaterial(Profmaterial entity) {
-		Material aux = new Material();
 		List<Material> listMat = viewAll();
 		for(Material ele : listMat) {
-			if(ele.getId() == entity.getMaterialId()) {
-				aux = ele;
+			if(ele.getName().equals(entity.getNameMaterial())) {
+				this.material = ele;
 			}
 		}
-		return aux;
+		return this.material;
 	}
 
 	public Material searchNameMaterial(Material entity) {
-		Material aux = new Material();
 		List<Material> listMat = viewAll();
 		for(Material ele : listMat) {
 			if(ele.getName().equals(entity.getName())) {
-				aux = ele;
+				this.material = ele;
 			}
 		}
-		return aux;
+		return this.material;
 	}
 
 	public boolean changeMaterial(Material entity) {

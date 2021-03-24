@@ -51,8 +51,10 @@ public class AdminController implements Controllers{
 	
 	@Override
 	@GetMapping("/profileAdmin")
-	public String getProfile(Model model){
-		model.addAttribute("account", new Account());
+	public String getProfile(@ModelAttribute Person person, Model model, HttpSession session, ModelMap mp){
+		model.addAttribute("account", new Account());	
+		person = (Person) session.getAttribute("admin");
+		mp.put("person", person);
         return "/admin/profileAdmin";
     }
 	
@@ -108,7 +110,10 @@ public class AdminController implements Controllers{
 		if(result.hasErrors()) {
 			destiny= "redirect:/admins/loginForm";
 		}else{			
-			Person per = perServ.login(entity);
+			accServ.login(entity);
+			Account acc = accServ.searchingAccount(entity);
+			
+			Person per = perServ.searchPerson(acc);
 			session.setAttribute("admin", per);
 			destiny = "redirect:/admins/profileAdmin";					
 		}
@@ -191,17 +196,11 @@ public class AdminController implements Controllers{
 		if(result.hasErrors()) {
 			destiny= "redirect:/admins/profileAdmin";
 		}else{						
-			perServ.logout(entity);
+			accServ.logout(entity);
 			session.removeAttribute("admin");
 			destiny = "redirect:/";			
 		}		
 		return destiny;
-	}
-
-	@Override
-	public String getAll(Model model) {
-		// TODO Auto-generated method stub
-		return null;
-	}		
+	}	
 
 }

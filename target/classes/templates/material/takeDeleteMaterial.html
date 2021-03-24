@@ -132,6 +132,7 @@
             	<form th:object="${material}" th:action="@{/material/sendIdDeleteMaterial}" method="POST">
             	
           			<div class="form-group">
+          			    <label class="labels" for="name">Nombre de la Materia a Eliminar</label>
                         <input th:field="*{name}" type="text" id="name" name="name"
                             class="form-control form-control-sm bg-light" 
                             placeholder="Name" >
@@ -155,27 +156,25 @@
                           <h2>LISTADO DE MATERIAS</h2>
                         </div>
                         
-                        <div class="fresh-table full-color-orange">
+                        <div class="fresh-table full-color-red">
                         <!-- full-color-blue, full-color-azure, full-color-green, full-color-red, full-color-orange-->
                           
                           <table id="fresh-table" class="table">
                             <thead>
-                              <th>ID</th>
                               <th>NAME</th>
                               <th>HOUR</th>
                               <th>CAPACITY</th>
                               <th>SUBSCRIBED</th>
-                              <th>DESCRIPTION</th>
+                              <th>DETAIL</th>
 
                             </thead>
                             <tbody>
                                 <tr data-th-each="material : ${materials}">
-                                    <td data-th-text="${material.materialId}"></td>
                                     <td data-th-text="${material.name}"></td>
                                     <td data-th-text="${material.hour}"></td>
                                     <td data-th-text="${material.capacity}"></td>
                                     <td data-th-text="${material.subscribed}"></td>
-                                    <td data-th-text="${material.description}"></td>
+                                    <td data-th-text="${material.detail}"></td>
                                 </tr>
                             </tbody>
                           </table>

@@ -2,10 +2,13 @@ package com.marianowinar.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -18,28 +21,28 @@ public class Material implements Serializable{
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "materialId", unique=true, nullable=false)
-	private Long materialId;	
-	
+	private Long materialId;		
 	private String name;
 	private String hour;
 	private String capacity;
 	private String subscribed;
-	private String description;
+	private String detail;
+	
 		
-	@ManyToMany(mappedBy = "materials")
+	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "materials")
 	private List<Person> persons;	
 	
 	public Material() {}
 	
-	public Material(Long materialId, String name, String hour, String capacity, String description, List<Person> persons, String subscribed) {
+	public Material(Long materialId, String name, String hour, String capacity, List<Person> persons, 
+			String subscribed, String detail) {
 		this.materialId = materialId;
 		this.name = name;
 		this.hour = hour;
 		this.capacity = capacity;
-		this.description = description;
 		this.persons = persons;
 		this.subscribed = subscribed;
+		this.detail = detail;
 	}
 
 	public Long getId() {
@@ -68,15 +71,7 @@ public class Material implements Serializable{
 
 	public void setCapacity(String capacity) {
 		this.capacity = capacity;
-	}
-
-	public String getDescripcion() {
-		return description;
-	}
-
-	public void setDescripcion(String descripcion) {
-		this.description = descripcion;
-	}
+	}	
 	
 	public String getSubscribed() {
 		return subscribed;
@@ -84,6 +79,14 @@ public class Material implements Serializable{
 
 	public void setSubscribed(String subscribed) {
 		this.subscribed = subscribed;
+	}
+
+	public String getDetail() {
+		return detail;
+	}
+
+	public void setDetail(String detail) {
+		this.detail = detail;
 	}
 	
 	// METHODS AND FUNCTION GAME LIST	

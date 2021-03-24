@@ -2,13 +2,13 @@ package com.marianowinar.model.forms;
 
 public class Profmaterial {
 	private Long personId;
-	private Long materialId;
+	private String nameMaterial;
 	
 	public Profmaterial() {}
 
-	public Profmaterial(Long personId, Long materialId) {
+	public Profmaterial(Long personId, String nameMaterial) {
 		this.personId = personId;
-		this.materialId = materialId;
+		this.nameMaterial = nameMaterial;
 	}
 
 	public Long getPersonId() {
@@ -19,14 +19,13 @@ public class Profmaterial {
 		this.personId = personId;
 	}
 
-	public Long getMaterialId() {
-		return materialId;
+	public String getNameMaterial() {
+		return nameMaterial;
 	}
 
-	public void setMaterialId(Long materialId) {
-		this.materialId = materialId;
+	public void setNameMaterial(String nameMaterial) {
+		this.nameMaterial = nameMaterial;
 	}
-	
-	
+
 
 }

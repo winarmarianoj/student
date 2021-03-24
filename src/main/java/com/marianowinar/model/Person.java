@@ -2,11 +2,14 @@ package com.marianowinar.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -27,7 +30,6 @@ public class Person implements Serializable{
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "per_id", unique=true, nullable=false)
 	private Long personId;		
 	private String name;
 	private String surname;
@@ -37,16 +39,14 @@ public class Person implements Serializable{
 	
 	@OneToOne(cascade = {CascadeType.ALL})
 	@JoinColumn(name = "userId")
-	private Account account;
+	private Account account;	
 	
-	@JoinTable(name = "persons_materials", 
-			joinColumns=@JoinColumn(name = "personId", nullable = false), 
-			inverseJoinColumns = @JoinColumn(name = "materialId", nullable = false))
-	@ManyToMany(cascade = CascadeType.ALL)
+	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinTable(name = "persons_materials", 	joinColumns = { @JoinColumn(name = "personId", nullable = false, updatable = false) },	inverseJoinColumns = { @JoinColumn(name = "materialId", nullable = false, updatable = false) })
 	private List<Material> materials;
 
 	public Person() {}
-
+	
 	public Person(Long personId, String name, String surname, String phone, String email, PersonType type,
 			Account account, List<Material> materials) {
 		this.personId = personId;
@@ -58,9 +58,14 @@ public class Person implements Serializable{
 		this.account = account;
 		this.materials = materials;
 	}
-
+	
+	
 	public Long getPersonId() {
 		return personId;
+	}
+
+	public void setPersonId(Long personId) {
+		this.personId = personId;
 	}
 
 	public String getName() {
@@ -106,11 +111,11 @@ public class Person implements Serializable{
 	public Account getAccount() {
 		return account;
 	}
-
 	public void setAccount(Account account) {
 		this.account = account;
-	}	
-	
+	}
+
+
 	// METHODS AND FUNCTION GAME LIST
 	
 	public List<Material> getListMaterial() {
@@ -118,7 +123,7 @@ public class Person implements Serializable{
         return materials;
     }
 
-    public void addMateial(Material mat) {
+    public void addMaterial(Material mat) {
     	if (materials == null){materials = new ArrayList<>();}
         materials.add(mat);
     }  

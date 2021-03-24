@@ -7,8 +7,10 @@ import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.marianowinar.model.Account;
+import com.marianowinar.model.Person;
 import com.marianowinar.model.forms.Register;
 
 @Controller
@@ -19,11 +21,11 @@ public interface Controllers{
 	 */
 	public String getRegister(Model model);
 	public String getLogin(Model model);
-	public String getProfile(Model model);
+	public String getProfile(@ModelAttribute Person person,Model model, HttpSession session, ModelMap mp);
 	public String getUpdate(Model model);
 	public String getDelete(Model model);
 	public String getLogout(Model model);
-	public String getAll(Model model);
+	
 	/*
 	 * POST FUNCTIONS
 	 */

@@ -20,8 +20,8 @@ public class ValidMaterial {
 		boolean res = validName(mat.getName());
 		res &= validName(mat.getHour());
 		res &= validName(mat.getCapacity());
-		res &= validName(mat.getDescripcion());
 		res &= validName(mat.getSubscribed());
+		res &= validName(mat.getDetail());
 		
 		if(!res)throw new InvalidNameMaterialException("Invalid name material or null");
 		

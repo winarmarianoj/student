@@ -45,7 +45,7 @@
             </a>
           </li>
           <li class="active">
-            <a href="/professor/professorControlPanel">           
+            <a href="/professor/professorControlPanel">          
               <i class="tim-icons icon-atom"></i>
               <p>Professor</p>
             </a>
@@ -124,62 +124,88 @@
             <a class="btn btn-yellow" href="/professor/takeIdAddMaterialProfessor">Add Material</a>
             <a class="btn btn-yellow" href="/professor/takeIdDeleteMaterialProfessor">Delete Material</a>
             <a class="btn btn-yellow" href="/professor/takeIdProfessorListMat">Id Professor Material List</a>
-        </section>   
+        </section>    
         
         <section class="col-12 offset-fixed my-5">
         
-        	<div class="py-3 pt-2 text-muted text-center text-small">
-                        <ul class="titleRegister list-inline">
-                            <li class="list-inline-item"><img src="../logos/logo.png" width="50%" alt=""></li>
-                            <li class="list-inline-item text-center "><a href="#"></a><p id="titleContacts">Formulario de Ingreso de Profesores</p></li>
-                        </ul>
-                    </div>
-                    
-                    <!--INIT DATA-->
+               <!--INIT DATA-->
                     <div class="row justify-content-center" >            
                                             
                         <div class="col-md-8 order-md-1">                       
         
                             <!--INIT FORM ACCOUNT-->
-                            <form th:object="${professor}" th:action="@{/professor/registerProfessor}" method="POST"  class="needs-validation" novalidate>
+                            <form th:object="${takeid}" th:action="@{/professor/idProfessorListMaterial}" method="POST"  class="needs-validation" novalidate>
                                 <div class="row">
                                         
                                         <div class="col-md-4 mb-5">
-                                            <label class="labels" for="name" >Nombre</label>
-                                            <input th:field="*{name}" type="text" class="form-control" id="name" placeholder="" value="" required>
+                                            <label class="labels" for="num">Ingrese el ID del Professor a solicitar</label>
+                                            <input th:field="*{num}" type="text" class="form-control" id="num" placeholder=>
                                         </div>
+                                        <!-- 
                                         <div class="col-md-4 mb-5">
                                             <label class="labels" for="surname">Apellido</label>
                                             <input th:field="*{surname}" type="text" class="form-control" id="surname" placeholder=>
-                                        </div>                                        
-                                        <div class="col-md-4 mb-5">
-                                            <label class="labels" for="phone">Teléfono</label>
-                                            <input th:field="*{phone}" type="text" class="form-control" id="phone" placeholder=>
                                         </div>
-                                        <div class="col-md-4 mb-5">
-                                            <label class="labels" for="email">Email</label>
-                                            <input th:field="*{email}" type="email" class="form-control" id="email" placeholder=>
-                                        </div>
-                                        <div class="col-md-4 mb-5">
-                                            <label class="labels" for="active">Activo o no</label>
-                                            <input th:field="*{active}" type="text" class="form-control" id="active" placeholder=>
-                                        </div>                                       
-                                        
+                                         --> 
                                 </div>                                
 
                                 <!-- BUTTON REGISTER BLUE -->
-                                <input type="submit" id="btnCreateProfessor" value="Create Professor" class="btn btn-success"/>  
-                                
-                                
-                                <a th:href="@{/professor/professorControlPanel}" type="button" class="btn btn-primary ml-5">Return Professor Control Panel</a>
+                                <input type="submit" id="" value="Send Professor" class="btn btn-success"/>
 
                             </form>
                             <!--END FORM ACCOUNT-->                            
                         </div>                           
                     </div>
                     <!--END DATA-->
+        
+        	     
                       
         </section>
+        
+        <section class="col-12 offset-fixed my-4">
+        
+        	<div class="row">
+                    <!-- INIT TABLE -->
+                      <div class="col-md-12 col-md-offset-2">
+                        <div class="description">
+                          <h2>LISTADO DE PROFESORES</h2>
+                        </div>
+                        
+                        <div class="fresh-table full-color-green">
+                        <!-- full-color-blue, full-color-azure, full-color-green, full-color-red, full-color-orange-->
+                          
+                          <table id="fresh-table" class="table">
+                            <thead>
+                              <th>ID</th>
+                              <th>NAME</th>
+                              <th>SURNAME</th>
+                              <th>PHONE</th>
+                              <th>EMAIL</th>
+                              <th>TYPE</th>
+                              <th>ACTIVE</th>
+
+                            </thead>
+                            <tbody>
+                                <tr data-th-each="professor : ${professors}">
+                                    <td data-th-text="${professor.personId}"></td>
+                                    <td data-th-text="${professor.name}"></td>
+                                    <td data-th-text="${professor.surname}"></td>
+                                    <td data-th-text="${professor.phone}"></td>
+                                    <td data-th-text="${professor.email}"></td>
+                                    <td data-th-text="${professor.type}"></td>
+                                    <td data-th-text="${professor.active}"></td>
+                                </tr>
+                            </tbody>
+                          </table>
+                        </div>                    
+                      </div>
+                      <!--END FORM OR TABLE --> 
+                      
+            </div>
+        
+        </section>
+        
+        
 
       </div>
       <!-- END CENTRAL BODY -->

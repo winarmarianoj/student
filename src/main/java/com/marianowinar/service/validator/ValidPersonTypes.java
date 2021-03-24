@@ -32,27 +32,12 @@ public class ValidPersonTypes {
 		res &= validName(pro.getSurname());
 		res &= validName(pro.getPhone());		
 		res &= validName(pro.getEmail());
-		res &= validActive(pro.isActive());
 		
 		if(!res)throw new InvalidNamesPersonException("Invalid Name or Incorrect Text");		
 		return res;
 	}
-		
-	private boolean validActive(boolean active) {return active == true;}
-
-	private boolean validName(String name) {return name != null || name != "";}
 	
-	/*
-	private boolean validateEmail(String email) throws InvalidMailException {
-		boolean res = true;
-		
-        if (email == null) {res = false; throw new InvalidMailException("null");}
-            
-
-        if (!Pattern.matches("^([a-zA-Z0-9-._ñ]+)@([a-zA-Z0-9-._ñ]+).([a-zA-Z]{2,5})$",email)) {
-        	res = false; throw new InvalidMailException(email);}
-        
-        return res;            
-    }
-*/
+	
+	private boolean validName(String name) {return name != null || name != "";}	
+	
 }

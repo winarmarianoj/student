@@ -1,10 +1,12 @@
 package com.marianowinar.service.application;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.marianowinar.model.Material;
 import com.marianowinar.model.Professor;
 import com.marianowinar.model.enums.PersonType;
 import com.marianowinar.model.forms.Profmaterial;
@@ -22,10 +24,12 @@ public class ProfessorService implements Services<Professor>{
 		
 	private Errors errors;	
 	private ValidPersonTypes validPer;
+	private Professor prof;
 
 	public ProfessorService() {
 		this.validPer = ValidPersonTypes.getInstance();
 		this.errors = Errors.getInstance();
+		this.prof = new Professor();
 	}
 
 	@Override
@@ -45,22 +49,15 @@ public class ProfessorService implements Services<Professor>{
 	}
 
 	@Override
-	public boolean update(Professor entity) {
-		boolean res = false;
-		if(create(entity)) res = true;
-		
-		return res;
+	public boolean update(Professor entity) {		
+		return create(entity);
 	}
 
 	@Override
 	public boolean delete(Long id) {
-		boolean res = false;
 		Professor aux = take(id);
 		profRepo.delete(aux);
-		
-		if(!searchProfessor(aux)) res = true;
-		
-		return res;
+		return searchProfessor(aux);
 	}
 
 	@Override
@@ -96,7 +93,7 @@ public class ProfessorService implements Services<Professor>{
 		boolean res = false;
 		List<Professor> listProf = viewAll();
 		for(Professor ele : listProf) {
-			if(ele == entity) {
+			if(ele.getName().equals(entity.getName()) && ele.getSurname().equals(entity.getSurname())) {
 				res = true;
 			}
 		}
@@ -107,41 +104,57 @@ public class ProfessorService implements Services<Professor>{
 	 * Busca y devuelve un objeto Professor si existe
 	 */
 	public Professor searchingProfessor(Professor entity) {
-		Professor aux = null;
 		List<Professor> listProf = viewAll();
 		for(Professor ele : listProf) {
 			if(ele.getPersonId() == entity.getPersonId()) {
-				aux = ele;
+				this.prof = ele;
 			}
 		}
-		return aux;
+		return this.prof;
 	}
 
 	/*
 	 * Cambiar los datos de un objeto Professor
 	 */
 	public boolean changeProfessor(Professor entity) {
-		boolean res = false;
 		Professor aux = searchingProfessor(entity);
-		if(update(aux)) {
-			res = true;
-		}
-		return res;
+		return update(aux);
 	}
 
-	/*
-	 * Busca objeto Professor con el id para agregar una
-	 * materia
-	 */
+	
+	 /*
+	  * Busca objeto Professor con el id para agregar una materia
+	  */	 
 	public Professor searchingProfessor(Profmaterial entity) {
-		Professor aux = null;
 		List<Professor> listProf = viewAll();
 		for(Professor ele : listProf) {
 			if(ele.getPersonId() == entity.getPersonId()) {
-				aux = ele;
+				this.prof = ele;
 			}
 		}
-		return aux;
+		return this.prof;
+	}
+	
+
+	public Professor searchProfessorNameSurname(Professor entity) {
+		List<Professor> listProf = viewAll();
+		for(Professor ele : listProf) {
+			if(ele.getName().equals(entity.getName()) && ele.getSurname().equals(entity.getSurname())){
+				this.prof = ele;
+			}
+		}
+		return this.prof;
+	}
+
+	public Professor searchProfessorId(long idProf) {
+		
+		List<Professor> listProf = viewAll();
+		for(Professor ele : listProf) {
+			if(ele.getPersonId() == idProf){
+				this.prof = ele;
+			}
+		}
+		return this.prof;
 	}
 
 }
