@@ -231,4 +231,15 @@ public class PersonService implements Services<Person>{
 		return delete(per.getPersonId());
 	}
 
+	public Person searchPersonAdmin() {
+		List<Person> listPerson = viewAll();
+		for(Person ele : listPerson) {
+			if(ele.getType().equals(PersonType.ADMIN) &&
+					ele.getAccount().isActive()){
+				this.per = ele;
+			}
+		}
+		return this.per;
+	}
+
 }

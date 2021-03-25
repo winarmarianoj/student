@@ -1,5 +1,9 @@
 package com.marianowinar.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.marianowinar.model.Account;
 import com.marianowinar.model.Person;
 import com.marianowinar.model.forms.Register;
+import com.marianowinar.model.forms.Instance;
+import com.marianowinar.model.forms.Takeid;
 import com.marianowinar.service.application.AccountService;
 import com.marianowinar.service.application.PersonService;
 import com.marianowinar.service.factory.FactoryEntities;
@@ -28,7 +34,15 @@ public class AdminController implements Controllers{
 	@Autowired
 	private AccountService accServ;	
 		
-	private FactoryEntities factory = FactoryEntities.getInstance();	
+	private FactoryEntities factory;
+	private Takeid dniNum;
+	private Instance instance;
+	
+	public AdminController() {
+		this.factory  = FactoryEntities.getInstance(); 
+		this.dniNum = new Takeid(); 
+		this.instance = new Instance(); 
+	}
 	
 	
 	/*
@@ -51,16 +65,25 @@ public class AdminController implements Controllers{
 	
 	@Override
 	@GetMapping("/profileAdmin")
-	public String getProfile(@ModelAttribute Person person, Model model, HttpSession session, ModelMap mp){
-		model.addAttribute("account", new Account());	
-		person = (Person) session.getAttribute("admin");
-		mp.put("person", person);
+	public String getProfile(Model model, ModelMap mp){
+		model.addAttribute("takeid", new Takeid());		
+		Person perInstance = perServ.searchPersonAdmin();	
+		
+		List<Person> list = new ArrayList<>();
+		list.add(perInstance);
+		mp.put("persons", list);		
         return "/admin/profileAdmin";
     }
 	
 	@Override
 	@GetMapping("/updateAdmin")
-	public String getUpdate(Model model){
+	public String getUpdate(Model model, ModelMap mp){
+        Person perInstance = perServ.searchPersonAdmin();	
+		
+		List<Person> list = new ArrayList<>();
+		list.add(perInstance);
+		mp.put("persons", list);
+		
 		model.addAttribute("register", new Register());
         return "/admin/updateAdmin";
     }
@@ -105,16 +128,14 @@ public class AdminController implements Controllers{
 	 */
 	@Override
 	@PostMapping(value = "/login")
-	public String postLogin(@ModelAttribute Account entity, BindingResult result, HttpSession session) {
+	public String postLogin(@ModelAttribute Account entity, BindingResult result) {
 		String destiny = "";
 		if(result.hasErrors()) {
 			destiny= "redirect:/admins/loginForm";
 		}else{			
 			accServ.login(entity);
-			Account acc = accServ.searchingAccount(entity);
-			
-			Person per = perServ.searchPerson(acc);
-			session.setAttribute("admin", per);
+			Account acc = accServ.searchingAccount(entity);			
+			Person per = perServ.searchPerson(acc);			
 			destiny = "redirect:/admins/profileAdmin";					
 		}
 		return destiny;
@@ -125,13 +146,12 @@ public class AdminController implements Controllers{
 	 */
 	@Override
 	@PostMapping(value = "/profile")	
-	public String postProfile(@ModelAttribute Account entity, BindingResult result, ModelMap mp) {
+	public String postProfile(@ModelAttribute Takeid entity, BindingResult result, ModelMap mp) {
 		String destiny = "";
 		if(result.hasErrors()) {
 			destiny= "redirect:/admins/profileAdmin";
 		}else{
-			Person per = perServ.searchPerson(entity);
-			mp.put("profileAdmin", per);
+			this.dniNum.setText(entity.getText());
 			destiny = "redirect:/admins/updateAdmin";		
 		}
 		return destiny;
@@ -142,7 +162,7 @@ public class AdminController implements Controllers{
 	 */
 	@Override
 	@PostMapping(value = "/changeProfile")
-	public String postChangeProfile(@ModelAttribute Register entity, BindingResult result, ModelMap mp, HttpSession session) {
+	public String postChangeProfile(@ModelAttribute Register entity, BindingResult result, ModelMap mp) {
 		String destiny = "";
 		if(result.hasErrors()) {
 			destiny= "redirect:/admins/updateAdmin";
@@ -156,7 +176,6 @@ public class AdminController implements Controllers{
 									
 			if(accServ.update(per.getAccount())) {
 				if(perServ.update(per)) {
-					session.setAttribute("admin", per);
 					destiny = "redirect:/admins/profileAdmin";
 				}
 			}else {				
@@ -171,13 +190,12 @@ public class AdminController implements Controllers{
 	 */
 	@Override
 	@PostMapping(value = "/deleteProfile")
-	public String postDeleteProfile(@ModelAttribute Account entity, BindingResult result, HttpSession session) {
+	public String postDeleteProfile(@ModelAttribute Account entity, BindingResult result) {
 		String destiny = "";
 		if(result.hasErrors()) {
 			destiny= "redirect:/admins/profileAdmin";
 		}else{
 			if(perServ.deleteProfile(entity)) {
-				session.removeAttribute("admin");
 				destiny = "redirect:/";
 			}else {
 				destiny= "redirect:/admins/profileAdmin";
@@ -191,13 +209,12 @@ public class AdminController implements Controllers{
 	 */
 	@Override
 	@PostMapping(value = "/logoutProfile")
-	public String postLogoutProfile(@ModelAttribute Account entity, BindingResult result, HttpSession session) {
+	public String postLogoutProfile(@ModelAttribute Account entity, BindingResult result) {
 		String destiny = "";
 		if(result.hasErrors()) {
 			destiny= "redirect:/admins/profileAdmin";
 		}else{						
 			accServ.logout(entity);
-			session.removeAttribute("admin");
 			destiny = "redirect:/";			
 		}		
 		return destiny;
