@@ -1,5 +1,8 @@
 package com.marianowinar.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,13 +13,20 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.marianowinar.model.Material;
+import com.marianowinar.model.Person;
+import com.marianowinar.model.Professor;
 import com.marianowinar.model.forms.Profmaterial;
+import com.marianowinar.model.forms.Takeid;
 import com.marianowinar.service.application.MaterialService;
 import com.marianowinar.service.application.ProfessorService;
 
 @Controller
 @RequestMapping(value = "/material")
 public class MaterialController implements Controllerss<Material>{
+	
+	private Takeid takeid;
+	
+	public MaterialController() {this.takeid = new Takeid();}
 	
 	@Autowired
 	private MaterialService matServ;
@@ -72,6 +82,26 @@ public class MaterialController implements Controllerss<Material>{
 		return null;
 	}
 	
+	
+	@GetMapping("/takeNameListMaterialProfessor")
+	public String getNameListMaterialProfessor(Model model, ModelMap mp) {
+		model.addAttribute("takeid", new Takeid());
+		mp.put("materials", matServ.viewAll());
+		return "/material/takeNameListMaterialProfessor";
+	}
+	
+	
+	@GetMapping("/matListProf")
+	public String getListMaterialProfessor(Model model, ModelMap mp) {
+		Material material = matServ.searchNameMaterial(this.takeid);		
+		List<Person> listProf = material.getListPerson();
+		mp.put("persons", listProf);
+		
+		List<Material> list = new ArrayList<>();
+		list.add(material);		
+		mp.put("materials", list);		
+		return "/material/matListProf";
+	}
 	
 
 	/*
@@ -162,4 +192,34 @@ public class MaterialController implements Controllerss<Material>{
 		return null;
 	}
 
+	/*
+	 * Por un objeto Material lista los Profesores asignados
+	 */
+	@PostMapping(value = "/sendNameMaterialListProfessor")
+	public String postNameMaterialListProfessor(Takeid entity, BindingResult result) {
+		String destiny = "";
+	    if(result.hasErrors()){		        
+	        destiny = "redirect:/material/takeNameListMaterialProfessor";
+	    }else{
+	    	this.takeid.setText(entity.getText());	
+	        destiny = "redirect:/material/matListProf";
+	    }
+	    return destiny;
+	}
+
+	/*
+	 * SETERS Y GETERS
+	 */
+	public Takeid getTakeid() {
+		return takeid;
+	}
+
+	public void setTakeid(Takeid takeid) {
+		this.takeid = takeid;
+	}
+	
+	
+	
+	
+	
 }

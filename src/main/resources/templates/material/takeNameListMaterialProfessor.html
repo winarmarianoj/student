@@ -122,7 +122,30 @@
             <a class="btn btn-yellow" href="/material/takeIdChangeMaterial">Update Material</a>
             <a class="btn btn-yellow" href="/material/takeIdDeleteMaterial">Delete Material</a>
             <a class="btn btn-yellow" href="/material/takeNameListMaterialProfessor">Listar Profesores por Materia</a>
-        </section>        
+        </section> 
+        
+        <section class="col-12 offset-fixed my-5">
+        
+            <h4>MATERIAL OBJECT ONLY USE UPDATE OR DELETE</h4>
+        
+        	<!--Inicio de Solicitud de su Profile -->
+            <div class="card card-plain">
+            	<form th:object="${takeid}" th:action="@{/material/sendNameMaterialListProfessor}" method="POST">
+            	
+          			<div class="form-group">
+          			    <label class="labels" for="name">Nombre de la Materia a Listar</label>
+                        <input th:field="*{text}" type="text" id="name" name="name"
+                            class="form-control form-control-sm bg-light" 
+                            placeholder="Name" required="">
+                    </div>                    
+                        
+                    <!-- BUTTON REGISTER BLUE -->
+                    <input type="submit" id="" value="Send Name Material List Professor" class="btn btn-yellow"/>                                        	
+            	</form>
+            </div>
+            <!--Fin de Solicitud de su Profile -->            
+                      
+        </section>       
         
         <section class="col-12 offset-fixed my-4">
         
@@ -147,7 +170,7 @@
 
                             </thead>
                             <tbody>
-                                <tr data-th-each="material : ${materials}">
+                                <tr data-th-each="material : ${materials}">                                    
                                     <td data-th-text="${material.name}"></td>
                                     <td data-th-text="${material.hour}"></td>
                                     <td data-th-text="${material.capacity}"></td>

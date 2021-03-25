@@ -9,6 +9,7 @@ import com.marianowinar.model.Material;
 import com.marianowinar.model.Person;
 import com.marianowinar.model.Professor;
 import com.marianowinar.model.forms.Profmaterial;
+import com.marianowinar.model.forms.Takeid;
 import com.marianowinar.repository.MaterialRepository;
 import com.marianowinar.service.exception.material.InvalidCapacityMaterialException;
 import com.marianowinar.service.exception.material.InvalidNameMaterialException;
@@ -113,6 +114,9 @@ public class MaterialService implements Services<Material>{
 		return this.material;
 	}
 
+	/*
+	 * Busca y devuelve un objeto Material segun su nombre
+	 */
 	public Material searchNameMaterial(Material entity) {
 		List<Material> listMat = viewAll();
 		for(Material ele : listMat) {
@@ -123,6 +127,9 @@ public class MaterialService implements Services<Material>{
 		return this.material;
 	}
 
+	/*
+	 * Busca el objeto Material e implementa los cambios
+	 */
 	public boolean changeMaterial(Material entity) {
 		boolean res = false;
 		List<Material> listMat = viewAll();
@@ -133,5 +140,19 @@ public class MaterialService implements Services<Material>{
 			}
 		}
 		return res;
+	}
+	
+	/*
+	 * Busca un objeto Material para luego listar los
+	 * profesores o estudiantes que tenga asignado
+	 */
+	public Material searchNameMaterial(Takeid entity) {
+		List<Material> listMat = viewAll();
+		for(Material ele : listMat) {
+			if(ele.getName().equals(entity.getText())) {
+				this.material = ele;
+			}
+		}
+		return this.material;
 	}
 }

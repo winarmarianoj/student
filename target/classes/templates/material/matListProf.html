@@ -122,7 +122,48 @@
             <a class="btn btn-yellow" href="/material/takeIdChangeMaterial">Update Material</a>
             <a class="btn btn-yellow" href="/material/takeIdDeleteMaterial">Delete Material</a>
             <a class="btn btn-yellow" href="/material/takeNameListMaterialProfessor">Listar Profesores por Materia</a>
-        </section>        
+        </section> 
+        
+         <section class="col-12 offset-fixed my-4">
+        
+        	<div class="row">
+                    <!-- INIT TABLE -->
+                      <div class="col-md-12 col-md-offset-2">
+                        <div class="description">
+                          <h2>LISTADO DE PROFESORES</h2>
+                        </div>
+                        
+                        <div class="fresh-table full-color-blue">
+                        <!-- full-color-blue, full-color-azure, full-color-green, full-color-red, full-color-orange-->
+                          
+                          <table id="fresh-table" class="table">
+                            <thead>
+                              <th>ID</th>
+                              <th>NAME</th>
+                              <th>SURNAME</th>
+                              <th>PHONE</th>
+                              <th>EMAIL</th>
+                              <th>TYPE</th>
+
+                            </thead>
+                            <tbody>
+                                <tr data-th-each="person : ${persons}">
+                                    <td data-th-text="${person.personId}"></td>
+                                    <td data-th-text="${person.name}"></td>
+                                    <td data-th-text="${person.surname}"></td>
+                                    <td data-th-text="${person.phone}"></td>
+                                    <td data-th-text="${person.email}"></td>
+                                    <td data-th-text="${person.type}"></td>
+                                </tr>
+                            </tbody>
+                          </table>
+                        </div>                    
+                      </div>
+                      <!--END FORM OR TABLE --> 
+                      
+            </div>
+        
+        </section>       
         
         <section class="col-12 offset-fixed my-4">
         
@@ -131,7 +172,7 @@
                       <!-- INIT TABLE -->
                       <div class="col-md-12 col-md-offset-2">
                         <div class="description">
-                          <h2>LISTADO DE MATERIAS</h2>
+                          <h2>INFORMACION DE LA MATERIA SOLICITADA</h2>
                         </div>
                         
                         <div class="fresh-table full-color-red">
@@ -161,7 +202,8 @@
                       <!--END FORM OR TABLE -->
                   </div>
         
-        </section>
+        </section>      
+        
 
       </div>
       <!-- END CENTRAL BODY -->
