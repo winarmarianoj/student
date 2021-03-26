@@ -14,11 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.marianowinar.model.Material;
 import com.marianowinar.model.Person;
-import com.marianowinar.model.Professor;
 import com.marianowinar.model.forms.Profmaterial;
 import com.marianowinar.model.forms.Takeid;
 import com.marianowinar.service.application.MaterialService;
-import com.marianowinar.service.application.ProfessorService;
 
 @Controller
 @RequestMapping(value = "/material")
@@ -30,8 +28,6 @@ public class MaterialController implements Controllerss<Material>{
 	
 	@Autowired
 	private MaterialService matServ;
-	@Autowired
-	private ProfessorService profServ;
 
 	@Override
 	@GetMapping("/materialControlPanel")
@@ -72,27 +68,27 @@ public class MaterialController implements Controllerss<Material>{
 
 	@Override
 	public String getIdAddMaterial(Model model, ModelMap mp) {
-		// TODO Auto-generated method stub
+		// No la utiliza
 		return null;
 	}
 
 	@Override
 	public String getIdDeleteMaterial(Model model, ModelMap mp) {
-		// TODO Auto-generated method stub
+		// No la utiliza
 		return null;
 	}
 	
-	
+	@Override
 	@GetMapping("/takeNameListMaterialProfessor")
-	public String getNameListMaterialProfessor(Model model, ModelMap mp) {
+	public String getIdNameListProfMat(Model model, ModelMap mp) {
 		model.addAttribute("takeid", new Takeid());
 		mp.put("materials", matServ.viewAll());
 		return "/material/takeNameListMaterialProfessor";
 	}
 	
-	
+	@Override
 	@GetMapping("/matListProf")
-	public String getListMaterialProfessor(Model model, ModelMap mp) {
+	public String getListProfMat(Model model, ModelMap mp) {
 		Material material = matServ.searchNameMaterial(this.takeid);		
 		List<Person> listProf = material.getListPerson();
 		mp.put("persons", listProf);
@@ -182,21 +178,22 @@ public class MaterialController implements Controllerss<Material>{
 
 	@Override
 	public String postAddMaterial(Profmaterial entity, BindingResult result) {
-		// TODO Auto-generated method stub
+		// No la utiliza
 		return null;
 	}
 
 	@Override
 	public String postDeleteMaterial(Profmaterial entity, BindingResult result) {
-		// TODO Auto-generated method stub
+		// No la utiliza
 		return null;
 	}
 
 	/*
 	 * Por un objeto Material lista los Profesores asignados
 	 */
+	@Override
 	@PostMapping(value = "/sendNameMaterialListProfessor")
-	public String postNameMaterialListProfessor(Takeid entity, BindingResult result) {
+	public String postIdNameListProfMat(Takeid entity, BindingResult result) {
 		String destiny = "";
 	    if(result.hasErrors()){		        
 	        destiny = "redirect:/material/takeNameListMaterialProfessor";

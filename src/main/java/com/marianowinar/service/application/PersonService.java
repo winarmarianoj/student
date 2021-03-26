@@ -6,10 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.marianowinar.model.Account;
+import com.marianowinar.model.Material;
 import com.marianowinar.model.Person;
 import com.marianowinar.model.enums.PersonType;
 import com.marianowinar.model.forms.Forgot;
 import com.marianowinar.model.forms.Register;
+import com.marianowinar.model.forms.Takeid;
 import com.marianowinar.repository.PersonRepository;
 import com.marianowinar.service.exception.account.InvalidPasswordAccountException;
 import com.marianowinar.service.exception.person.InvalidMailException;
@@ -29,6 +31,9 @@ public class PersonService implements Services<Person>{
 	
 	@Autowired
 	private AccountService accServ;
+	
+	@Autowired
+	private MaterialService matServ;
 	
 	private PasswordEncryptor encryptor;
 	private ValidPass validPass;
@@ -231,6 +236,9 @@ public class PersonService implements Services<Person>{
 		return delete(per.getPersonId());
 	}
 
+	/*
+	 * Devuelve objeto Admin activo
+	 */
 	public Person searchPersonAdmin() {
 		List<Person> listPerson = viewAll();
 		for(Person ele : listPerson) {
@@ -240,6 +248,46 @@ public class PersonService implements Services<Person>{
 			}
 		}
 		return this.per;
+	}
+
+	/*
+	 * Devuelve el Estudiante Activo o logueado 
+	 */
+	public Person searchPersonStudent(String text) {
+		List<Person> listPerson = viewAll();
+		for(Person ele : listPerson) {
+			if(ele.getType().equals(PersonType.STUDENT) &&
+					ele.getAccount().isActive() &&
+					ele.getAccount().getDni().equals(text)){
+				this.per = ele;
+			}
+		}
+		return this.per;
+	}	
+
+	/*
+	 * Inscripciones de Estudiantes a Materias
+	 */
+	public boolean inscription(Takeid entity) {
+		boolean res = false;
+		Person student = searchPersonStudent(entity.getText());
+		Material material = matServ.searchMaterialName(entity.getNameMaterial());
+		int capacity = Integer.parseInt(material.getCapacity());
+		int subs = Integer.parseInt(material.getSubscribed());
+		
+		if(capacity > subs && !notInscripted(student,material)) {
+			student.addMaterial(material);
+			update(student);
+			subs++;
+			material.setSubscribed(String.valueOf(subs));
+			matServ.update(material);
+			res = true;
+		}
+		return res;
+	}
+
+	private boolean notInscripted(Person student, Material material) {		
+		return student.searchExistMaterial(material.getName());
 	}
 
 }

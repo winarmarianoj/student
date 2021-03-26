@@ -3,9 +3,6 @@ package com.marianowinar.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.marianowinar.model.Account;
 import com.marianowinar.model.Person;
 import com.marianowinar.model.forms.Register;
-import com.marianowinar.model.forms.Instance;
 import com.marianowinar.model.forms.Takeid;
 import com.marianowinar.service.application.AccountService;
 import com.marianowinar.service.application.PersonService;
@@ -36,12 +32,10 @@ public class AdminController implements Controllers{
 		
 	private FactoryEntities factory;
 	private Takeid dniNum;
-	private Instance instance;
 	
 	public AdminController() {
 		this.factory  = FactoryEntities.getInstance(); 
 		this.dniNum = new Takeid(); 
-		this.instance = new Instance(); 
 	}
 	
 	
@@ -104,7 +98,7 @@ public class AdminController implements Controllers{
 	
 	
 	/*
-	 * REGISTER ADMIN
+	 * ADMIN REGISTER
 	 */
 	@Override
 	@PostMapping(value = "/admin")
@@ -142,7 +136,7 @@ public class AdminController implements Controllers{
 	}		
 	
 	/*
-	 * PROFILE ADMIN
+	 * ADMIN PROFILE
 	 */
 	@Override
 	@PostMapping(value = "/profile")	
@@ -158,7 +152,7 @@ public class AdminController implements Controllers{
 	}		
 	
 	/*
-	 * CHANGE PROFILE ADMIN
+	 * ADMIN CHANGE 
 	 */
 	@Override
 	@PostMapping(value = "/changeProfile")
@@ -168,11 +162,11 @@ public class AdminController implements Controllers{
 			destiny= "redirect:/admins/updateAdmin";
 		}else{
 						
-			Person per = perServ.searchPerson(entity);
-			
+			Person per = perServ.searchPerson(entity);			
 			Account acc = factory.changeAccount(per,entity);
-			per.setAccount(acc);
+			
 			per = factory.changePerson(per, entity);
+			per.setAccount(acc);
 									
 			if(accServ.update(per.getAccount())) {
 				if(perServ.update(per)) {

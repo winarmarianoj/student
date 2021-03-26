@@ -141,6 +141,18 @@ public class Person implements Serializable{
         }
         return aux;
     }
+    
+    public boolean searchExistMaterial(String mat){
+    	boolean res = false;        
+        
+        for(Material ele : materials) {
+        	if(ele.getName().equals(mat)) {
+        		res = true;
+        	}
+        }
+        return res;
+    }
+    
     public boolean removeMaterial(Long index){
     	if (index < 0 || index >= listaMaterialSize()){return false;}
         materials.remove(index);

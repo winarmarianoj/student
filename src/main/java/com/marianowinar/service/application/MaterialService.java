@@ -155,4 +155,14 @@ public class MaterialService implements Services<Material>{
 		}
 		return this.material;
 	}
+
+	public Material searchMaterialName(String nameMaterial) {
+		List<Material> listMat = viewAll();
+		for(Material ele : listMat) {
+			if(ele.getName().equals(nameMaterial)) {
+				this.material = ele;
+			}
+		}
+		return this.material;
+	}
 }

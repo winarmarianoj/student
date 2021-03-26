@@ -22,11 +22,13 @@ public class AccountService implements Services<Account>{
 	private ValidAccount vacc;
 	private Errors errors;
 	private ValidPass validatePass;
+	private Account account;
 
 	public AccountService() {
 		this.vacc = ValidAccount.getInstance();
 		this.errors = Errors.getInstance();
 		this.validatePass = ValidPass.getInstance();
+		this.account = new Account();
 	}
 
 	@Override
@@ -109,15 +111,14 @@ public class AccountService implements Services<Account>{
 	 * Devuelve la cuenta
 	 */
 	public Account searchingAccount(Account acc) {
-		Account res = null;
 		List<Account> listAcc = viewAll();
 		for(Account ele : listAcc) {
 			if(ele.getDni().equals(acc.getDni()) && ele.getLegajo().equals(acc.getLegajo())) {
-				res = ele;
+				this.account = ele;
 				break;
 			}
 		}
-		return res;
+		return this.account;
 	}
 	
 	/*

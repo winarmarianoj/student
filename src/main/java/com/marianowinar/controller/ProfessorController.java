@@ -2,7 +2,6 @@ package com.marianowinar.controller;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -88,13 +87,15 @@ public class ProfessorController implements Controllerss<Professor>{
 		return "/professor/takeIdDeleteMaterialProfessor";
 	}
 	
+	@Override
 	@GetMapping("/takeIdProfessorListMat")
-	public String getIdProfessorListMat(Model model, ModelMap mp) {
+	public String getIdNameListProfMat(Model model, ModelMap mp) {
 		model.addAttribute("takeid", new Takeid());
 		mp.put("professors", profServ.viewAll());
 		return "/professor/takeIdProfessorListMaterial";
 	}
 	
+	@Override
 	@GetMapping("/listProfessorMaterial")
 	public String getListProfMat(Model model, ModelMap mp) {
 		Professor profesor = profServ.searchProfessorId(this.num.getNum());
@@ -235,8 +236,12 @@ public class ProfessorController implements Controllerss<Professor>{
 	    return destiny;
 	}	
 	
+	/*
+	 * Toma el ID del Profesor para listar las Materias que tiene asignadas
+	 */
+	@Override
 	@PostMapping(value = "/idProfessorListMaterial")
-	public String postProfessorListMaterial(Takeid entity, BindingResult result) {
+	public String postIdNameListProfMat(Takeid entity, BindingResult result) {
 		String destiny = "";
 	    if(result.hasErrors()){		        
 	        destiny = "redirect:/professor/takeIdProfessorListMaterial";

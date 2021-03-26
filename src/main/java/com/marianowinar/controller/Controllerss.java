@@ -1,11 +1,11 @@
 package com.marianowinar.controller;
 
-
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 
 import com.marianowinar.model.forms.Profmaterial;
+import com.marianowinar.model.forms.Takeid;
 
 public interface Controllerss<T> {
 	
@@ -19,6 +19,8 @@ public interface Controllerss<T> {
 	public String getIdDelete(Model model, ModelMap mp);
 	public String getIdAddMaterial(Model model, ModelMap mp);
 	public String getIdDeleteMaterial(Model model, ModelMap mp);
+	public String getIdNameListProfMat(Model model, ModelMap mp);
+	public String getListProfMat(Model model, ModelMap mp);
 	
 	/*
 	 * POST FUNCTIONS
@@ -29,5 +31,6 @@ public interface Controllerss<T> {
 	public String postDeleteProfile(T entity, BindingResult result);
 	public String postAddMaterial(Profmaterial entity, BindingResult result);
 	public String postDeleteMaterial(Profmaterial entity, BindingResult result);
+	public String postIdNameListProfMat(Takeid entity, BindingResult result);
 
 }
