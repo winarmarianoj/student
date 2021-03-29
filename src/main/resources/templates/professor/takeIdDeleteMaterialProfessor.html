@@ -58,17 +58,17 @@
             </a>
           </li>
           <li>
-            <a href="/admins/inscripciones">
+            <a href="/admins/share">
               <i class="tim-icons icon-bell-55"></i>
               <p>Inscription</p>
             </a>
           </li>
           <li>
-            <a href="/student/profileStudent">
+            <a href="/admins/ListStudent">
               <i class="tim-icons icon-single-02"></i>
               <p>Students</p>
             </a>
-          </li>          
+          </li>              
         </ul>
       </div>
     </div>
@@ -136,7 +136,7 @@
             	<form th:object="${profmaterial}" th:action="@{/professor/deleteMaterialProfessor}" method="POST">
             	
           			<div class="form-group">
-          			    <label class="labels" for="professorId">Ingrese el ID del Profesor</label>
+          			    <label class="labels" for="personId">Ingrese el ID del Profesor</label>
                         <input th:field="*{personId}" type="text" id="id" name="id" class="form-control form-control-sm bg-light" 
                             placeholder="Professor ID" required="">
                     </div>
@@ -144,7 +144,7 @@
                     <div class="form-group">
                         <label class="labels" for="nameMaterial">Ingrese el Nombre de la Materia</label>
                         <input th:field="*{nameMaterial}" type="text" id="" name="nameMaterial" class="form-control form-control-sm bg-light" 
-                            placeholder="Name Matererial" required="">
+                            placeholder="Name Material" required="">
                     </div>                         
                         
                     <!-- BUTTON REGISTER BLUE -->
@@ -165,7 +165,7 @@
                           <h2>LISTADO DE MATERIAS</h2>
                         </div>
                         
-                        <div class="fresh-table full-color-green">
+                        <div class="fresh-table full-color-red">
                         <!-- full-color-blue, full-color-azure, full-color-green, full-color-red, full-color-orange-->
                           
                           <table id="fresh-table" class="table">
@@ -184,6 +184,49 @@
                                     <td data-th-text="${material.capacity}"></td>
                                     <td data-th-text="${material.subscribed}"></td>                                    
                                     <td data-th-text="${material.detail}"></td>
+                                </tr>
+                            </tbody>
+                          </table>
+                        </div>                    
+                      </div>
+                      <!--END FORM OR TABLE -->
+                  </div>
+        
+        </section>
+        
+        <section class="col-12 offset-fixed my-4">
+        
+        	<div class="row">
+                    
+                      <!-- INIT TABLE -->
+                      <div class="col-md-12 col-md-offset-2">
+                        <div class="description">
+                          <h2>LISTADO DE PROFESORES</h2>
+                        </div>
+                        
+                        <div class="fresh-table full-color-green">
+                        <!-- full-color-blue, full-color-azure, full-color-green, full-color-red, full-color-orange-->
+                          
+                          <table id="fresh-table" class="table">
+                            <thead>
+                              <th>ID</th>
+                              <th>NAME</th>
+                              <th>SURNAME</th>
+                              <th>PHONE</th>
+                              <th>EMAIL</th>
+                              <th>TYPE</th>
+                              <th>ACTIVE</th>
+
+                            </thead>
+                            <tbody>
+                                <tr data-th-each="professor : ${professors}">
+                                    <td data-th-text="${professor.personId}"></td>
+                                    <td data-th-text="${professor.name}"></td>
+                                    <td data-th-text="${professor.surname}"></td>
+                                    <td data-th-text="${professor.phone}"></td>
+                                    <td data-th-text="${professor.email}"></td>
+                                    <td data-th-text="${professor.type}"></td>
+                                    <td data-th-text="${professor.active}"></td>
                                 </tr>
                             </tbody>
                           </table>

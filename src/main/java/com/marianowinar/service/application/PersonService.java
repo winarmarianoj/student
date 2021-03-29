@@ -5,10 +5,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.marianowinar.model.Account;
 import com.marianowinar.model.Material;
 import com.marianowinar.model.Person;
-import com.marianowinar.model.enums.PersonType;
+import com.marianowinar.model.Users;
 import com.marianowinar.model.forms.Forgot;
 import com.marianowinar.model.forms.Register;
 import com.marianowinar.model.forms.Takeid;
@@ -17,7 +16,6 @@ import com.marianowinar.service.exception.account.InvalidPasswordAccountExceptio
 import com.marianowinar.service.exception.person.InvalidMailException;
 import com.marianowinar.service.exception.person.InvalidNamesPersonException;
 import com.marianowinar.service.factory.FactoryEntities;
-import com.marianowinar.service.helper.ListPerson;
 import com.marianowinar.service.logger.Errors;
 import com.marianowinar.service.util.PasswordEncryptor;
 import com.marianowinar.service.validator.ValidPass;
@@ -30,7 +28,7 @@ public class PersonService implements Services<Person>{
 	private PersonRepository perRepo;
 	
 	@Autowired
-	private AccountService accServ;
+	private UserService accServ;
 	
 	@Autowired
 	private MaterialService matServ;
@@ -41,7 +39,6 @@ public class PersonService implements Services<Person>{
 	private ValidPersonTypes validPer;
 	private Person per;
 	private FactoryEntities factory;	
-	private ListPerson listPerson;
 
 	public PersonService() {
 		this.validPer = ValidPersonTypes.getInstance();
@@ -50,7 +47,6 @@ public class PersonService implements Services<Person>{
 		this.validPass  = ValidPass.getInstance();
 		this.factory = FactoryEntities.getInstance();
 		this.per = new Person();
-		this.listPerson = new ListPerson();
 	}
 
 	@Override
@@ -109,13 +105,30 @@ public class PersonService implements Services<Person>{
 	 * METHODS AND FUNCTIONS
 	 */
 	
+		
+	/*
+	 * LOGIN
+	 */
+	public boolean login(Register entity) {
+		boolean res = false;
+		this.per = searchPersonDni(entity.getDni());
+		if(!this.per.getAccount().isEnabled()) {
+			this.per.getAccount().setEnabled(true);
+			if(accServ.update(per.getAccount())) {
+				update(this.per);
+				res = true;
+			}
+		}
+		return res;
+	}	
+	
 	/*
 	 * Recibe el objeto forgot y luego procesa con update
 	 * devuelve el resultado al controller booleano
 	 */	
 	public boolean changePasswordPerson(Forgot entity) {
 		boolean res = false;
-		Person aux = searchPerson(entity);
+		Person aux = searchPersonDni(entity.getDni());
 		
 		try {
 			if(validPass.validatePass(entity.getPassword())) {
@@ -129,41 +142,6 @@ public class PersonService implements Services<Person>{
 	}	
 	
 	
-	/*
-	 * Busca si la persona existe o no y devuelve un booleano
-	 * Forgot
-	 */
-	public Person searchPerson(Account entity) {		
-		/*
-		List<Person> listPerson = viewAll();
-		for(Person ele : listPerson) {
-			if(ele.getAccount().getUserId() == entity.getUserId()){
-				this.per = ele;
-			}
-		}
-		*/
-		
-		for(Person ele : listPerson.getListPerson()) {
-			if(ele.getAccount().getDni().equals(entity.getDni())) {
-				this.per = ele;
-			}
-		}
-		return this.per;
-	}	
-	
-	/*
-	 * Busca si la persona existe o no y devuelve un booleano
-	 * Forgot
-	 */
-	public Person searchPerson(Forgot entity) {
-		List<Person> listPerson = viewAll();
-		for(Person ele : listPerson) {
-			if(ele.getAccount().getLegajo().equals(entity.getLegajo())) {
-				this.per = ele;
-			}
-		}
-		return this.per;
-	}
 	
 	/*
 	 * Busca si la persona existe o no y devuelve un booleano
@@ -185,15 +163,14 @@ public class PersonService implements Services<Person>{
 	 */
 	public boolean createAdmin(Register entity) {
 		entity.setPassword(encryptor.generateSecurePassword(entity.getPassword()));
-		Account acc = factory.createAccount(entity);
+		Users acc = factory.createAccount(entity);
 		
 		Person per = factory.createPerson(entity);
-		per.setType(PersonType.ADMIN);
+		per.setType("ADMIN");
 		
 		if(!accServ.searchAccount(acc)) {accServ.create(acc);}		
 		if(!searchPerson(per)) {per.setAccount(acc);}		
 		
-		listPerson.addPerson(per);
 		return create(per);
 	}
 	
@@ -202,15 +179,14 @@ public class PersonService implements Services<Person>{
 	 */
 	public boolean createStudent(Register entity) {
 		entity.setPassword(encryptor.generateSecurePassword(entity.getPassword()));
-		Account acc = factory.createAccount(entity);		
+		Users acc = factory.createAccount(entity);
 		
 		Person per = factory.createPerson(entity);
-		per.setType(PersonType.STUDENT);
+		per.setType("STUDENT");
 		
 		if(!accServ.searchAccount(acc)) {accServ.create(acc);}		
 		if(!searchPerson(per)) {per.setAccount(acc);}		
 		
-		listPerson.addPerson(per);
 		return create(per);
 	}
 
@@ -218,10 +194,10 @@ public class PersonService implements Services<Person>{
 	 * Busca un objeto Persona con un objeto Register
 	 * devuelve objeto Persona
 	 */
-	public Person searchPerson(Register entity) {		
+	public Person searchPersonDni(String text) {		
 		List<Person> listPerson = viewAll();
 		for(Person ele : listPerson) {
-			if(ele.getAccount().getDni().equals(entity.getDni()) || ele.getAccount().getLegajo().equals(entity.getLegajo())) {
+			if(ele.getDni().equals(text)){
 				this.per = ele;
 			}
 		}
@@ -231,63 +207,121 @@ public class PersonService implements Services<Person>{
 	/*
 	 * Delete Person y Account
 	 */
-	public boolean deleteProfile(Account entity) {		
-		Person per = searchPerson(entity);
-		return delete(per.getPersonId());
-	}
-
-	/*
-	 * Devuelve objeto Admin activo
-	 */
-	public Person searchPersonAdmin() {
-		List<Person> listPerson = viewAll();
-		for(Person ele : listPerson) {
-			if(ele.getType().equals(PersonType.ADMIN) &&
-					ele.getAccount().isActive()){
-				this.per = ele;
+	public boolean deleteProfile(Takeid entity) {
+		boolean res = false;
+		Person per = searchPersonDni(entity.getText());
+		if(per.getAccount().getUsername().equals(entity.getNameMaterial())) {
+			if(delete(per.getPersonId())) {
+				res = true;
 			}
 		}
-		return this.per;
+		return res;
 	}
-
-	/*
-	 * Devuelve el Estudiante Activo o logueado 
-	 */
-	public Person searchPersonStudent(String text) {
-		List<Person> listPerson = viewAll();
-		for(Person ele : listPerson) {
-			if(ele.getType().equals(PersonType.STUDENT) &&
-					ele.getAccount().isActive() &&
-					ele.getAccount().getDni().equals(text)){
-				this.per = ele;
-			}
-		}
-		return this.per;
-	}	
+	
 
 	/*
 	 * Inscripciones de Estudiantes a Materias
 	 */
 	public boolean inscription(Takeid entity) {
 		boolean res = false;
-		Person student = searchPersonStudent(entity.getText());
+		Person student = searchPersonDni(entity.getText());
 		Material material = matServ.searchMaterialName(entity.getNameMaterial());
 		int capacity = Integer.parseInt(material.getCapacity());
 		int subs = Integer.parseInt(material.getSubscribed());
 		
 		if(capacity > subs && !notInscripted(student,material)) {
-			student.addMaterial(material);
+			if(notSameHour(material)){
+				student.addMaterial(material);
+				update(student);
+				subs++;
+				material.setSubscribed(String.valueOf(subs));
+				matServ.update(material);
+				res = true;
+			}
+		}
+		return res;
+	}
+
+	/*
+	 * Eliminar una Materia de la lista del Estudiante
+	 */
+	public boolean unsubscribed(Takeid entity) {
+		boolean res = false;
+		Person student = searchPersonDni(entity.getText());
+		Material material = matServ.searchMaterialName(entity.getNameMaterial());
+		int capacity = Integer.parseInt(material.getCapacity());
+		int subs = Integer.parseInt(material.getSubscribed());
+		
+		if(student.removeMaterialName(material.getName())) {
 			update(student);
-			subs++;
+			subs--;
 			material.setSubscribed(String.valueOf(subs));
 			matServ.update(material);
 			res = true;
 		}
 		return res;
 	}
+	
 
+	/*
+	 * Busca y Cambia Person y Users Admin
+	 */
+	public boolean changeProfileAdmin(Register entity) {
+		boolean res = false;
+		Person per = searchPersonDni(entity.getDni());
+		per = changePerson(per, entity);
+		accServ.create(per.getAccount());
+		if(create(per)) res = true;
+		
+		return res;
+	}
+
+	/*
+	 * Busca y Cambia Persons y Users Student
+	 */
+	public boolean changeProfileStudent(Register entity) {
+		boolean res = false;
+		Person per = searchPersonDni(entity.getDni());
+		per = changePerson(per, entity);
+		accServ.create(per.getAccount());
+		if(create(per)) res = true;
+		
+		return res;
+	}
+	
+	/*
+	 * Setea los cambios en Person y User
+	 */
+	private Person changePerson(Person per, Register entity) {
+		per.setDni(entity.getDni());
+		per.setName(entity.getName());
+		per.setSurname(entity.getSurname());
+		per.setEmail(entity.getEmail());
+		per.setPhone(entity.getPhone());
+		per.getAccount().setEnabled(true);
+		per.getAccount().setUsername(entity.getLegajo());
+		per.getAccount().setPassword(entity.getPassword());
+		return per;
+	}
+
+	/*
+	 * Que no este inscrito en esa materia
+	 */
 	private boolean notInscripted(Person student, Material material) {		
-		return student.searchExistMaterial(material.getName());
+		return student.searchExistMaterial(material);
+	}
+	
+	/*
+	 * Que la materia nueva no sea del mismo horario que otra
+	 */
+	private boolean notSameHour(Material material) {
+		boolean res = true;
+		for(Material ele : matServ.viewAll()) {
+			if(ele.getHour().equals(material.getHour())) {
+				res = false;
+			}
+		}		
+		return res;
 	}
 
 }

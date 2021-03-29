@@ -1,7 +1,14 @@
 package com.marianowinar.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+
+import javax.servlet.ServletException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,16 +20,14 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.marianowinar.model.Account;
 import com.marianowinar.model.Material;
 import com.marianowinar.model.Person;
-import com.marianowinar.model.Professor;
 import com.marianowinar.model.forms.Register;
 import com.marianowinar.model.forms.Takeid;
-import com.marianowinar.service.application.AccountService;
 import com.marianowinar.service.application.MaterialService;
 import com.marianowinar.service.application.PersonService;
-import com.marianowinar.service.factory.FactoryEntities;
+import com.marianowinar.service.application.UserService;
+import com.marianowinar.service.helper.ListPerson;
 
 @Controller
 @RequestMapping(value = "/student")
@@ -31,85 +36,122 @@ public class StudentController implements Controllers{
 	@Autowired
 	private PersonService perServ;
 	@Autowired
-	private AccountService accServ;
+	private UserService userServ;
 	@Autowired
 	private MaterialService matServ;
 	
-	private FactoryEntities factory;
-	private Takeid dniNum;
+	private Takeid takeid;
+	private ListPerson list;
 	
 	public StudentController() {
-		this.factory = FactoryEntities.getInstance();
-		this.dniNum = new Takeid();
+		this.takeid = new Takeid();
+	}
+	
+	/*
+	 * Respuesta solo en la creación de la cuentas nuevas
+	 */
+	@GetMapping("/responseCreate")
+	public String getResponseCreate(ModelMap mp) {
+		List<Takeid> list = new ArrayList<>();
+		list.add(this.takeid);
+		mp.put("takeids", list);
+        return "/student/responseStudentCreate";
+	}
+	
+	/*
+	 * Respuestas a lo largo de sus operaciones
+	 */
+	@GetMapping("/response")
+	public String getResponse(ModelMap mp) {
+		List<Takeid> list = new ArrayList<>();
+		list.add(this.takeid);
+		mp.put("takeids", list);
+        return "/student/responseStudent";
+	}
+	
+	/*
+	 * Respuestas a lo largo de sus operaciones
+	 */
+	@GetMapping("/responseInscription")
+	public String getInscription(ModelMap mp) {
+		List<Takeid> list = new ArrayList<>();
+		list.add(this.takeid);
+		mp.put("takeids", list);
+        return "/student/responseSubscription";
 	}
 
 	@Override
 	@GetMapping("/registerStudent")
 	public String getRegister(Model model) {
 		model.addAttribute("register", new Register());
-        return "/student/registerStudent";
+        return "/student/registerStudents";
 	}
 
 	@Override
 	@GetMapping("/loginForm")
 	public String getLogin(Model model) {
-		model.addAttribute("account", new Account());
+		model.addAttribute("register", new Register());
 		return "/student/loginStudent";
 	}
 
 	@Override
 	@GetMapping("/profileStudent")
-	public String getProfile(Model model, ModelMap mp) {
-		model.addAttribute("takeid", new Takeid());	
-		Person perInstance = perServ.searchPersonStudent(this.dniNum.getText());
+	public String getProfile(Model model, ModelMap mp) throws ServletException, IOException {	
+		model.addAttribute("takeid", new Takeid());
+		Person perInstance = perServ.searchPersonDni(this.takeid.getText());
 		List<Person> list = new ArrayList<>();
 		list.add(perInstance);
-		mp.put("persons", list);		
-        return "/student/profileStudent";
+		mp.put("persons", list);
+        return "/student/profStudent";
 	}
 
 	@Override
 	@GetMapping("/updateStudent")
-	public String getUpdate(Model model, ModelMap mp) {
-		model.addAttribute("register", new Register());
-        Person perInstance = perServ.searchPersonStudent(this.dniNum.getText());
+	public String getUpdate(Model model, ModelMap mp) throws ServletException, IOException {
+		Person perInstance = perServ.searchPersonDni(this.takeid.getText());
 		List<Person> list = new ArrayList<>();
 		list.add(perInstance);
-		mp.put("persons", list);
-        return "/student/updateStudent";
+		mp.put("persons", list);		
+		model.addAttribute("register", new Register());
+		return "/student/updateChangeStudent";
 	}
 
 	@Override
 	@GetMapping("/deleteStudent")
 	public String getDelete(Model model) {
-		model.addAttribute("account", new Account());
-        return "/student/deleteStudent";
+		model.addAttribute("takeid", new Takeid());
+        return "/student/deleStudents";
 	}
 
 	@Override
 	@GetMapping("/logoutStudent")
 	public String getLogout(Model model) {
-		model.addAttribute("account", new Account());
-        return "/student/logoutStudent";
+		model.addAttribute("takeid", new Takeid());
+        return "/student/outStudent";
 	}
 	
 	@GetMapping("/inscription")
 	public String getInscription(Model model, ModelMap mp) {
 		model.addAttribute("takeid", new Takeid());
-		mp.put("materials", matServ.viewAll());
+		mp.put("materials", matOrdenar());
         return "/student/inscriptionStudent";
 	}
 	
 	@GetMapping("/listMaterialInscripted")
-	public String getInscripcionStudentMat(Model model, ModelMap mp) {
-		Person student = perServ.searchPersonStudent(this.dniNum.getText());
-		List<Material> listMat = student.getListMaterial();
-		mp.put("materials", listMat);
-		
+	public String getInscripcionStudentMat(Model model, ModelMap mp)  {		
+		Person student = perServ.searchPersonDni(this.takeid.getText());
 		List<Person> list = new ArrayList<>();
 		list.add(student);
 		mp.put("students", list);
+		mp.put("materials", matOrdenarStudent(student));
 		return "/student/listMaterialStudentInscripted";
+	}
+
+	@GetMapping("/UnsubscribedMaterial")
+	public String getUnsubscribedMaterial(Model model, ModelMap mp) {
+		model.addAttribute("takeid", new Takeid());
+		mp.put("materials", matOrdenar());
+        return "/student/deleteMatStudent";
 	}
 	
     /*
@@ -124,12 +166,18 @@ public class StudentController implements Controllers{
 			destiny= "redirect:/student/registerStudent";
 		}else {
 			if(perServ.createStudent(entity)) {
-				destiny = "redirect:/student/loginForm";
-			}else {			
-				destiny = "redirect:/student/registerStudent";
+				//destiny = "redirect:/student/loginForm";
+				this.takeid.setText("La Cuenta se ha creado satisfactoriamente. Puede loguearse!!! Bienvenido al Sitio");
+				destiny = "redirect:/student/responseCreate";
+			}else {
+				//destiny = "redirect:/student/registerStudent";
+				this.takeid.setText("Ha cargado datos erróneos, vuelva a intentarlo.");
+				destiny = "redirect:/student/responseCreate";
 			}	
 		}
 		return destiny;
+		
+		
 	}
 
 	/*
@@ -137,16 +185,23 @@ public class StudentController implements Controllers{
 	 */
 	@Override
 	@PostMapping(value = "/login")
-	public String postLogin(@ModelAttribute Account entity, BindingResult result) {
+	public String postLogin(@ModelAttribute Register entity, BindingResult result) throws ServletException, IOException {
 		String destiny = "";
 		if(result.hasErrors()) {
-			destiny= "redirect:/student/loginForm";
-		}else{			
-			accServ.login(entity);
-			Account acc = accServ.searchingAccount(entity);			
-			Person student = perServ.searchPerson(acc);			
-			this.dniNum.setText(entity.getDni());
-			destiny = "redirect:/student/profileStudent";					
+			this.takeid.setText("La Operación causó errores, Por favor vuelva a intentarlo. Gracias");
+		    destiny= "redirect:/student/responseCreate";
+		}else{		
+			if(perServ.login(entity)) {
+				//destiny = "redirect:/student/profileStudent";
+				//Person student = perServ.searchPersonDni(entity.getDni());
+				//list.addPerson(student);
+				this.takeid.setText(entity.getDni());			
+				//this.takeid.setText("Se ha logueado correctamente. Puede ingresar al Sitio presionando el botón a su Perfil.");
+				destiny = "redirect:/student/profileStudent";
+			}else {
+				this.takeid.setText("Ha cargado datos erróneos, vuelva a intentarlo.");
+				destiny = "redirect:/student/response";
+			}				
 		}
 		return destiny;
 	}
@@ -161,7 +216,7 @@ public class StudentController implements Controllers{
 		if(result.hasErrors()) {
 			destiny= "redirect:/student/profileStudent";
 		}else{			
-			this.dniNum.setText(entity.getText());
+			this.takeid.setText(entity.getText());
 			destiny = "redirect:/student/updateStudent";		
 		}
 		return destiny;
@@ -177,20 +232,16 @@ public class StudentController implements Controllers{
 		if(result.hasErrors()) {
 			destiny= "redirect:/student/updateStudent";
 		}else{
-						
-			Person student = perServ.searchPerson(entity);			
-			Account acc = factory.changeAccount(student,entity);
 			
-			student = factory.changePerson(student, entity);
-			student.setAccount(acc);
-									
-			if(accServ.update(student.getAccount())) {
-				if(perServ.update(student)) {
-					destiny = "redirect:/student/profileStudent";
-				}
+			if(perServ.changeProfileStudent(entity)) {
+				//destiny = "redirect:/student/profileStudent";
+				this.takeid.setText("Los Cambios en su cuenta fueron correctos.");
+				destiny= "redirect:/student/response";
 			}else {				
-				destiny= "redirect:/student/updateStudent";
-			}		
+				//destiny= "redirect:/student/updateStudent";
+				this.takeid.setText("Incorrectos los Cambios realizados o la información ingresada es incorrecta. Vuelva a intentarlo.");
+				destiny= "redirect:/student/response";
+			}
 		}		
 		return destiny;
 	}
@@ -200,15 +251,19 @@ public class StudentController implements Controllers{
 	 */
 	@Override
 	@PostMapping(value = "/deleteProfile")
-	public String postDeleteProfile(@ModelAttribute Account entity, BindingResult result) {
+	public String postDeleteProfile(@ModelAttribute Takeid entity, BindingResult result) {
 		String destiny = "";
 		if(result.hasErrors()) {
 			destiny = "redirect:/student/profileStudent";
 		}else{
 			if(perServ.deleteProfile(entity)) {
-				destiny = "redirect:/";
+				list.removePerName(entity.getText());
+				this.takeid.setText("La Cuenta fue eliminada con éxito.");
+				destiny= "redirect:/student/response";
 			}else {
-				destiny = "redirect:/student/profileStudent";
+				//destiny= "redirect:/admins/profileAdmin";
+				this.takeid.setText("No pudo ser eliminada la cuenta, intente nuevamente.");
+				destiny= "redirect:/student/response";
 			}
 		}		
 		return destiny;
@@ -219,13 +274,17 @@ public class StudentController implements Controllers{
 	 */
 	@Override
 	@PostMapping(value = "/logoutProfile")
-	public String postLogoutProfile(@ModelAttribute Account entity, BindingResult result) {
+	public String postLogoutProfile(@ModelAttribute Takeid entity, BindingResult result) {
 		String destiny = "";
 		if(result.hasErrors()) {
-			destiny = "redirect:/student/profileStudent";
+			destiny= "redirect:/student/profileStudent";
 		}else{						
-			accServ.logout(entity);
-			destiny = "redirect:/";			
+			if(userServ.logout(entity)) {
+				destiny = "redirect:/";
+			}else {
+				this.takeid.setText("Error al intentar salir de la cuenta. Intente nuevamente.");
+				destiny= "redirect:/student/response";
+			}			
 		}		
 		return destiny;
 	}
@@ -238,17 +297,58 @@ public class StudentController implements Controllers{
 		String destiny = "";
 		if(result.hasErrors()) {
 			destiny = "redirect:/student/profileStudent";
-		}else{	
-			
+		}else{				
 			if(perServ.inscription(entity)) {
-				this.dniNum.setText(entity.getText());
-				destiny = "redirect:/student/listMaterialInscripted";
+				//destiny = "redirect:/";
+				this.takeid.setText("Su inscripción a la materia ha sido aceptada y se realizó correctamente!!");
+				destiny= "redirect:/student/responseInscription";
 			}else {
-				destiny = "redirect:/student/profileStudent";
+				this.takeid.setText("No se ha podido inscribir o los datos ingresados son erróneos.");
+				destiny= "redirect:/student/responseInscription";
 			}						
 		}		
 		return destiny;
 	}
-		
+	
+	/*
+	 * STUDENT MATERIAL UNSUBSCRIBED
+	 */
+	@PostMapping(value = "/unsubscribed")
+	public String postUnsubscribed(@ModelAttribute Takeid entity, BindingResult result) {
+		String destiny = "";
+		if(result.hasErrors()) {
+			destiny = "redirect:/student/profileStudent";
+		}else{				
+			if(perServ.unsubscribed(entity)) {
+				//destiny = "redirect:/";
+				this.takeid.setText("Su desuscripción a la materia ha sido aceptada y se realizó correctamente!!");
+				destiny= "redirect:/student/responseInscription";
+			}else {
+				this.takeid.setText("No se ha podido eliminar la materia de su lista o los datos son erróneos.");
+				destiny= "redirect:/student/responseInscription";
+			}						
+		}		
+		return destiny;
+	}
+	
+	private List<Material> matOrdenar(){
+		List<Material> list = matServ.viewAll();
+		Collections.sort(list, new Comparator<Material>() {
+			   public int compare(Material obj1, Material obj2) {
+				   return obj1.getName().compareTo(obj2.getName());
+			   }
+			});
+		return list;
+	}
+	
+	private Object matOrdenarStudent(Person student) {
+		List<Material> list = student.getListMaterial();
+		Collections.sort(list, new Comparator<Material>() {
+			   public int compare(Material obj1, Material obj2) {
+				   return obj1.getName().compareTo(obj2.getName());
+			   }
+			});
+		return list;
+	}
 
 }

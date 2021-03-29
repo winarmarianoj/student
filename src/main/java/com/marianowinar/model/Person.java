@@ -21,8 +21,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import com.marianowinar.model.enums.PersonType;
-
 @Entity
 @Table(name = "person")
 @Inheritance(strategy=InheritanceType.JOINED)
@@ -33,13 +31,14 @@ public class Person implements Serializable{
 	private Long personId;		
 	private String name;
 	private String surname;
+	private String dni;
 	private String phone;
 	private String email;
-	private PersonType type;
+	private String type;
 	
 	@OneToOne(cascade = {CascadeType.ALL})
 	@JoinColumn(name = "userId")
-	private Account account;	
+	private Users account;	
 	
 	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinTable(name = "persons_materials", 	joinColumns = { @JoinColumn(name = "personId", nullable = false, updatable = false) },	inverseJoinColumns = { @JoinColumn(name = "materialId", nullable = false, updatable = false) })
@@ -47,18 +46,18 @@ public class Person implements Serializable{
 
 	public Person() {}
 	
-	public Person(Long personId, String name, String surname, String phone, String email, PersonType type,
-			Account account, List<Material> materials) {
+	public Person(Long personId, String name, String surname, String phone, String email, 
+			Users account, List<Material> materials, String dni, String type) {
 		this.personId = personId;
 		this.name = name;
 		this.surname = surname;
 		this.phone = phone;
 		this.email = email;
-		this.type = type;
 		this.account = account;
 		this.materials = materials;
-	}
-	
+		this.dni = dni;
+		this.type = type;
+	}	
 	
 	public Long getPersonId() {
 		return personId;
@@ -100,24 +99,36 @@ public class Person implements Serializable{
 		this.email = email;
 	}
 
-	public PersonType getType() {
+	public Users getAccount() {
+		return account;
+	}
+	public void setAccount(Users account) {
+		this.account = account;
+	}
+	
+	public String getDni() {
+		return dni;
+	}
+
+	public void setDni(String dni) {
+		this.dni = dni;
+	}
+	
+	public String getType() {
 		return type;
 	}
 
-	public void setType(PersonType type) {
+	public void setType(String type) {
 		this.type = type;
 	}
 
-	public Account getAccount() {
-		return account;
-	}
-	public void setAccount(Account account) {
-		this.account = account;
-	}
-
+	
 
 	// METHODS AND FUNCTION GAME LIST
 	
+
+	
+
 	public List<Material> getListMaterial() {
         if (materials == null){materials = new ArrayList<>();}
         return materials;
@@ -142,11 +153,11 @@ public class Person implements Serializable{
         return aux;
     }
     
-    public boolean searchExistMaterial(String mat){
+    public boolean searchExistMaterial(Material mat){
     	boolean res = false;        
         
         for(Material ele : materials) {
-        	if(ele.getName().equals(mat)) {
+        	if(ele.getId() == mat.getId()) {
         		res = true;
         	}
         }
@@ -155,8 +166,21 @@ public class Person implements Serializable{
     
     public boolean removeMaterial(Long index){
     	if (index < 0 || index >= listaMaterialSize()){return false;}
-        materials.remove(index);
+        materials.remove(Math.toIntExact(index));
         return true;
+    }
+    
+    public boolean removeMaterialName(String name){ 
+    	boolean res = false;
+    	for(Material ele : getListMaterial()) {
+    		if(ele.getName().equals(name)) {
+    			if(removeMaterial(ele.getId())) {
+    				res = true;
+        			break;
+    			}
+    		}
+    	}        
+        return res;
     }
 	
 }

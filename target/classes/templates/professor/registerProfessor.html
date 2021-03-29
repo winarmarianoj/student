@@ -58,17 +58,17 @@
             </a>
           </li>
           <li>
-            <a href="/admins/inscripciones">
+            <a href="/admins/share">
               <i class="tim-icons icon-bell-55"></i>
               <p>Inscription</p>
             </a>
           </li>
           <li>
-            <a href="/student/profileStudent">
+            <a href="/admins/ListStudent">
               <i class="tim-icons icon-single-02"></i>
               <p>Students</p>
             </a>
-          </li>          
+          </li>              
         </ul>
       </div>
     </div>
@@ -164,7 +164,11 @@
                                         <div class="col-md-4 mb-5">
                                             <label class="labels" for="active">Activo o no</label>
                                             <input th:field="*{active}" type="text" class="form-control" id="active" placeholder=>
-                                        </div>                                       
+                                        </div> 
+                                        <div class="col-md-4 mb-5">
+                                            <label class="labels" for="dni">D.N.I.</label>
+                                            <input th:field="*{dni}" type="text" class="form-control" id="dni" placeholder=>
+                                        </div>                                      
                                         
                                 </div>                                
 

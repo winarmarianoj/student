@@ -2,11 +2,11 @@ package com.marianowinar.model.forms;
 
 public class Register {
 		
+	private String dni;
 	private String name;
 	private String surname;	
 	private String phone;
-	private String email;	
-	private String dni;
+	private String email;
 	private String legajo;
 	private String password;
 	

@@ -19,6 +19,7 @@ public class ValidPersonTypes {
 	
 	public boolean validPerson(Person per) throws InvalidNamesPersonException, InvalidMailException {
 		boolean res = validName(per.getName());
+		res &= validName(per.getDni());
 		res &= validName(per.getSurname());
 		res &= validName(per.getPhone());		
 		res &= validName(per.getEmail());	
@@ -29,6 +30,7 @@ public class ValidPersonTypes {
 	
 	public boolean validProfessor(Professor pro) throws InvalidNamesPersonException, InvalidMailException {
 		boolean res = validName(pro.getName());
+		res &= validName(pro.getDni());
 		res &= validName(pro.getSurname());
 		res &= validName(pro.getPhone());		
 		res &= validName(pro.getEmail());

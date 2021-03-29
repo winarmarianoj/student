@@ -1,6 +1,8 @@
 package com.marianowinar.controller;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -23,20 +26,32 @@ import com.marianowinar.service.application.ProfessorService;
 @RequestMapping(value = "/professor")
 public class ProfessorController implements Controllerss<Professor>{
 		
-	private Takeid num;
+	private Takeid takeid;
 	
-	public ProfessorController() {this.num = new Takeid();}
+	public ProfessorController() {this.takeid = new Takeid();}
 	
 	@Autowired
 	private ProfessorService profServ;	
 	
 	@Autowired
 	private MaterialService matServ;
+	
+	
+	/*
+	 * Respuestas a lo largo de sus operaciones
+	 */
+	@GetMapping("/responseProfessor")
+	public String getResponse(ModelMap mp) {
+		List<Takeid> list = new ArrayList<>();
+		list.add(this.takeid);
+		mp.put("takeids", list);
+        return "/professor/respProfessor";
+	}
 		
 	@Override
 	@GetMapping("/professorControlPanel")
-	public String getControlPanel(ModelMap mp) {		
-		mp.put("professors", profServ.viewAll());
+	public String getControlPanel(ModelMap mp) {
+		mp.put("professors", profOrdenar());
 		return "/professor/professorControlPanel";
 	}
 
@@ -50,23 +65,27 @@ public class ProfessorController implements Controllerss<Professor>{
 	@Override
 	@GetMapping("/takeIdChangeProfessor")
 	public String getIdChange(Model model, ModelMap mp) {
-		model.addAttribute("professor", new Professor());
-		mp.put("professors", profServ.viewAll());
+		model.addAttribute("takeid", new Takeid());
+		mp.put("professors", profOrdenar());
 		return "/professor/takeChangeProfessor";
 	}
 
 	@Override
 	@GetMapping("/updateProfessor")
-	public String getUpdate(Model model) {
+	public String getUpdate(Model model, ModelMap mp) {
 		model.addAttribute("professor", new Professor());
+		Professor professor = profServ.searchingProfessor(this.takeid);	
+		List<Professor> list = new ArrayList<>();
+		list.add(professor);
+        mp.put("professors", list);
 		return "/professor/updateProfessor";
 	}
 	
 	@Override
 	@GetMapping("/takeIdDeleteProfessor")
 	public String getIdDelete(Model model, ModelMap mp) {
-		model.addAttribute("professor", new Professor());
-		mp.put("professors", profServ.viewAll());
+		model.addAttribute("takeid", new Takeid());
+		mp.put("professors", profOrdenar());
 		return "/professor/takeDeleteProfessor";
 	}
 
@@ -75,7 +94,8 @@ public class ProfessorController implements Controllerss<Professor>{
 	@GetMapping("/takeIdAddMaterialProfessor")
 	public String getIdAddMaterial(Model model, ModelMap mp) {
 		model.addAttribute("profmaterial", new Profmaterial());
-		mp.put("materials", matServ.viewAll());
+		mp.put("materials", matOrdenar());
+		mp.put("professors", profOrdenar());
 		return "/professor/takeIdAddMaterialProfessor";
 	}
 	
@@ -83,7 +103,8 @@ public class ProfessorController implements Controllerss<Professor>{
 	@GetMapping("/takeIdDeleteMaterialProfessor")
 	public String getIdDeleteMaterial(Model model, ModelMap mp) {
 		model.addAttribute("profmaterial", new Profmaterial());
-		mp.put("materials", matServ.viewAll());
+		mp.put("materials", matOrdenar());
+		mp.put("professors", profOrdenar());
 		return "/professor/takeIdDeleteMaterialProfessor";
 	}
 	
@@ -91,30 +112,27 @@ public class ProfessorController implements Controllerss<Professor>{
 	@GetMapping("/takeIdProfessorListMat")
 	public String getIdNameListProfMat(Model model, ModelMap mp) {
 		model.addAttribute("takeid", new Takeid());
-		mp.put("professors", profServ.viewAll());
+		mp.put("professors", profOrdenar());
 		return "/professor/takeIdProfessorListMaterial";
 	}
 	
 	@Override
 	@GetMapping("/listProfessorMaterial")
 	public String getListProfMat(Model model, ModelMap mp) {
-		Professor profesor = profServ.searchProfessorId(this.num.getNum());
-		List<Material> listMat = profesor.getListMaterial();
-		mp.put("materialss", listMat);
-		
+		Professor profesor = profServ.searchProfessorId(this.takeid.getNum());
+		mp.put("materialss", matOrdenarProf(profesor));		
 		List<Professor> list = new ArrayList<>();
 		list.add(profesor);
 		mp.put("professorss", list);
 		return "/professor/profListMat";
 	}
-	
-	
+
 	/*
 	 * CREATE PROFESSOR
 	 */
 	@Override
 	@PostMapping(value = "/registerProfessor")
-	public String postRegister(Professor entity, BindingResult result) {
+	public String postRegister(@ModelAttribute Professor entity, BindingResult result) {
 		String destiny = "";
 		
 		if(result.hasErrors()) {
@@ -122,9 +140,13 @@ public class ProfessorController implements Controllerss<Professor>{
 		}else {
 			if(!profServ.searchProfessor(entity)) {
 				if(profServ.create(entity)) {
-					destiny = "redirect:/professor/professorControlPanel";
+					//destiny = "redirect:/professor/professorControlPanel";
+					this.takeid.setText("Su cuenta ha sido creada correctamente.!!");
+					destiny = "redirect:/professor/responseProfessor";
 				}else {
-					destiny = "redirect:/professor/createProfessor";
+					//destiny = "redirect:/professor/createProfessor";
+					this.takeid.setText("Hubo un error en la carga de su cuenta o datos erróneos");
+					destiny = "redirect:/professor/responseProfessor";
 				}
 				
 			}else {
@@ -140,13 +162,12 @@ public class ProfessorController implements Controllerss<Professor>{
 	 */
 	@Override
 	@PostMapping(value = "/sendIdChangeProfessor")
-	public String postTakeChangeProfile(Professor entity, BindingResult result, ModelMap mp) {	
+	public String postTakeChangeProfile(@ModelAttribute Takeid entity, BindingResult result, ModelMap mp) {	
 		String destiny = "";
 	    if(result.hasErrors()){		        
 	        destiny = "redirect:/professor/professorControlPanel";
 	    }else{
-	        Professor professor = profServ.searchingProfessor(entity);		        
-	        mp.put("professor", professor);
+	    	this.takeid.setNum(entity.getNum());	        
 	        destiny = "redirect:/professor/updateProfessor";
 	    }
 	    return destiny;
@@ -157,15 +178,19 @@ public class ProfessorController implements Controllerss<Professor>{
 	 */
 	@Override
 	@PostMapping(value = "/changeProfessor")
-	public String postChangeProfile(Professor entity, BindingResult result) {
+	public String postChangeProfile(@ModelAttribute Professor entity, BindingResult result) {
 		String destiny = "";
 		if(result.hasErrors()){		        
 	        destiny = "redirect:/professor/professorControlPanel";
 	    }else{
 	        if(profServ.changeProfessor(entity)) {
-	        	destiny = "redirect:/professor/professorControlPanel";
+	        	//destiny = "redirect:/professor/professorControlPanel";
+	        	this.takeid.setText("Los cambios en la cuenta del Profesor fueron correctos!!");
+	        	destiny = "redirect:/professor/responseProfessor";
 	        }else {
-	        	destiny = "redirect:/professor/takeChangeProfessor";
+	        	//destiny = "redirect:/professor/takeChangeProfessor";
+	        	this.takeid.setText("Datos erróneos vuelva a intentarlo.");
+	        	destiny = "redirect:/professor/responseProfessor";
 	        }
 	    }
 	    return destiny;
@@ -177,13 +202,20 @@ public class ProfessorController implements Controllerss<Professor>{
 	 */
 	@Override
 	@PostMapping(value = "/sendIdDeleteProfessor")
-	public String postDeleteProfile(Professor entity, BindingResult result) {
+	public String postDeleteProfile(@ModelAttribute Takeid entity, BindingResult result) {
 		String destiny = "";
 	    if(result.hasErrors()){		        
 	        destiny = "redirect:/professor/takeIdDeleteProfessor";
 	    }else{
-	        profServ.delete(entity.getPersonId());
-	        destiny = "redirect:/professor/professorControlPanel";
+	    	if(profServ.delete(entity.getNum())) {
+	        	//destiny = "redirect:/professor/professorControlPanel";
+	        	this.takeid.setText("La cuenta del Profesor fue eliminada correctamente!!");
+	        	destiny = "redirect:/professor/responseProfessor";
+	        }else {
+	        	//destiny = "redirect:/professor/takeChangeProfessor";
+	        	this.takeid.setText("Datos erróneos vuelva a intentarlo.");
+	        	destiny = "redirect:/professor/responseProfessor";
+	        }
 	    }
 	    return destiny;
 	}
@@ -194,21 +226,20 @@ public class ProfessorController implements Controllerss<Professor>{
 	 */
 	@Override
 	@PostMapping(value = "/addMaterialProfessor")
-	public String postAddMaterial(Profmaterial entity, BindingResult result) {
+	public String postAddMaterial(@ModelAttribute Profmaterial entity, BindingResult result) {
 		String destiny = "";
 	    if(result.hasErrors()){		        
 	        destiny = "redirect:/professor/takeIdAddMaterialProfessor";
 	    }else{
-	        Material mat = matServ.searchingMaterial(entity);
-	        Professor prof = profServ.searchProfessorId(entity.getPersonId());
-	        prof.addMaterial(mat);
-	        mat.addPerson(prof);
-	        
-	        if(profServ.create(prof) && matServ.create(mat)) {
-	        	destiny = "redirect:/professor/professorControlPanel";
+	        if(profServ.addMatProf(entity)) {
+	        	//destiny = "redirect:/professor/professorControlPanel";
+	        	this.takeid.setText("La Materia fue Agregada a la lista del Profesor correctamente!!");
+	        	destiny = "redirect:/professor/responseProfessor";
 	        }else {
-	        	destiny = "redirect:/professor/takeIdAddMaterialProfessor";
-	        }
+	        	//destiny = "redirect:/professor/takeIdAddMaterialProfessor";
+	        	this.takeid.setText("Datos erróneos vuelva a intentarlo.");
+	        	destiny = "redirect:/professor/responseProfessor";
+	        }	        
 	    }
 	    return destiny;
 	}
@@ -218,19 +249,20 @@ public class ProfessorController implements Controllerss<Professor>{
 	 */
 	@Override
 	@PostMapping(value = "/deleteMaterialProfessor")
-	public String postDeleteMaterial(Profmaterial entity, BindingResult result) {
+	public String postDeleteMaterial(@ModelAttribute Profmaterial entity, BindingResult result) {
 		String destiny = "";
 	    if(result.hasErrors()){		        
 	        destiny = "redirect:/professor/takeIdAddMaterialProfessor";
 	    }else{
-	        Material mat = matServ.searchingMaterial(entity);
-	        Professor prof = profServ.take(entity.getPersonId());
-	        if(prof.removeMaterial(mat.getId()) && mat.removePerson(prof.getPersonId())) {
-	        	if(profServ.update(prof)) {
-		        	destiny = "redirect:/professor/professorControlPanel";
-		        }else {
-		        	destiny = "redirect:/professor/takeIdAddMaterialProfessor";
-		        }
+	    	
+	    	if(profServ.deleteMatProf(entity)) {
+	        	//destiny = "redirect:/professor/professorControlPanel";
+	        	this.takeid.setText("La Materia fue Eliminada de la lista del Profesor correctamente!!");
+	        	destiny = "redirect:/professor/responseProfessor";
+	        }else {
+	        	//destiny = "redirect:/professor/takeIdDeleteMaterialProfessor";
+	        	this.takeid.setText("Datos erróneos vuelva a intentarlo.");
+	        	destiny = "redirect:/professor/responseProfessor";
 	        }
 	    }
 	    return destiny;
@@ -241,12 +273,12 @@ public class ProfessorController implements Controllerss<Professor>{
 	 */
 	@Override
 	@PostMapping(value = "/idProfessorListMaterial")
-	public String postIdNameListProfMat(Takeid entity, BindingResult result) {
+	public String postIdNameListProfMat(@ModelAttribute Takeid entity, BindingResult result) {
 		String destiny = "";
 	    if(result.hasErrors()){		        
 	        destiny = "redirect:/professor/takeIdProfessorListMaterial";
 	    }else{
-	        this.setNum(entity);
+	        this.takeid.setNum(entity.getNum());;
 	        destiny = "redirect:/professor/listProfessorMaterial";
 	    }
 	    return destiny;
@@ -258,12 +290,41 @@ public class ProfessorController implements Controllerss<Professor>{
 	 * SETERS Y GETERS
 	 */
 	public Takeid getNum() {
-		return num;
+		return takeid;
 	}
 
 	public void setNum(Takeid num) {
-		this.num = num;
+		this.takeid = num;
 	}
 	
+
+	private List<Material> matOrdenar(){
+		List<Material> list = matServ.viewAll();
+		Collections.sort(list, new Comparator<Material>() {
+			   public int compare(Material obj1, Material obj2) {
+				   return obj1.getName().compareTo(obj2.getName());
+			   }
+			});
+		return list;
+	}
 	
+	private List<Professor> profOrdenar(){
+		List<Professor> list = profServ.viewAll();
+		Collections.sort(list, new Comparator<Professor>() {
+			   public int compare(Professor obj1, Professor obj2) {
+				   return obj1.getName().compareTo(obj2.getName());
+			   }
+			});
+		return list;
+	}	
+	
+	private Object matOrdenarProf(Professor profesor) {
+		List<Material> list = profesor.getListMaterial();
+		Collections.sort(list, new Comparator<Material>() {
+			   public int compare(Material obj1, Material obj2) {
+				   return obj1.getName().compareTo(obj2.getName());
+			   }
+			});
+		return list;
+	}
 }

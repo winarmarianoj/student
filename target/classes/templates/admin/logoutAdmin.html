@@ -46,7 +46,7 @@
             </a>
           </li>
           <li >
-            <a href="/professor/professorControlPanel">           
+            <a href="/professor/professorControlPanel">            
               <i class="tim-icons icon-atom"></i>
               <p>Professor</p>
             </a>
@@ -58,13 +58,13 @@
             </a>
           </li>
           <li>
-            <a href="/admins/inscripciones">
+            <a href="/admins/share">
               <i class="tim-icons icon-bell-55"></i>
               <p>Inscription</p>
             </a>
           </li>
           <li>
-            <a href="/student/profileStudent">
+            <a href="/admins/ListStudent">
               <i class="tim-icons icon-single-02"></i>
               <p>Students</p>
             </a>
@@ -120,23 +120,23 @@
 
         <section class="col-12 offset-fixed">
             <a class="btn btn-yellow" href="/admins/deleteAdmin">Delete Profile</a>
-            <a class="btn btn-yellow" href="/admins/logoutAdmin">Logout</a>
+            <a class="btn btn-yellow" href="/admins/outAdmin">Logout</a>
         </section>
         
         <section class="col-12 offset-fixed my-5">
         
         	<!--Inicio de Solicitud de su Profile -->
             <div class="card card-plain">
-            	<form th:object="${account}" th:action="@{/admins/logoutProfile}" method="POST">
+            	<form th:object="${takeid}" th:action="@{/admins/logoutProfile}" method="POST">
             	
           			<div class="form-group">
-                        <input th:field="*{dni}" type="text" id="dni" name="dni"
+                        <input th:field="*{text}" type="text" id="" name="text"
                             class="form-control form-control-sm bg-light" 
                             placeholder="DNI" required="">
                     </div>
 
                     <div class="form-group">
-                        <input th:field="*{legajo}" type="text" id="legajo" name="legajo"
+                        <input th:field="*{nameMaterial}" type="text" id="nameMaterial" name="nameMaterial"
                             class="form-control form-control-sm bg-light" 
                             placeholder="Legajo" required="">
                     </div>

@@ -58,13 +58,13 @@
             </a>
           </li>
           <li>
-            <a href="/admins/inscripciones">
+            <a href="/admins/share">
               <i class="tim-icons icon-bell-55"></i>
               <p>Inscription</p>
             </a>
           </li>
           <li>
-            <a href="/student/profileStudent">
+            <a href="/admins/ListStudent">
               <i class="tim-icons icon-single-02"></i>
               <p>Students</p>
             </a>
@@ -120,12 +120,14 @@
 
         <section class="col-12 offset-fixed">
             <a class="btn btn-yellow" href="/admins/deleteAdmin">Delete Profile</a>
-            <a class="btn btn-yellow" href="/admins/logoutAdmin">Logout</a>
+            <a class="btn btn-yellow" href="/admins/outAdmin">Logout</a>
         </section>
+        
+      
         
         <section class="col-7 offset-fixed my-5">
         
-        	<!--Inicio de Solicitud de su Profile -->
+        	
             <div class="card card-plain">
             	<form th:object="${takeid}" th:action="@{/admins/profile}" method="POST">
             	
@@ -135,48 +137,55 @@
                             placeholder="Ingrese su DNI" required="">
                     </div>
                                             
-                    <!-- BUTTON REGISTER BLUE -->
+                    
                     <input type="submit" id="btnRegistrateAdmin" value="Send Admin Profile Search and Change" class="btn btn-yellow"/>                                        	
             	</form>
             </div>
-            <!--Fin de Solicitud de su Profile -->            
+              
                       
         </section>  
         
+        
+       
         <section class="col-12 offset-fixed my-4">
         
         	<div class="row">
                     
-                      <!-- INIT TABLE -->
+                     
                       <div class="col-md-12 col-md-offset-2">
                         <div class="description">
                           <h2>PROFILE ADMIN</h2>
                         </div>
                         
                         <div class="fresh-table full-color-blue">
-                        <!-- full-color-blue, full-color-azure, full-color-green, full-color-red, full-color-orange-->
+            
                           
                           <table id="fresh-table" class="table">
                             <thead>
+                              <th>DNI</th>
                               <th>NAME</th>
                               <th>SURNAME</th>
-                              <th>TYPE</th>
+                              <th>PHONE</th>
+                              <th>EMAIL</th>
 
                             </thead>
                             <tbody>
                                 <tr data-th-each="person : ${persons}">
+                                    <td data-th-text="${person.dni}"></td>
                                     <td data-th-text="${person.name}"></td>
                                     <td data-th-text="${person.surname}"></td>
-                                    <td data-th-text="${person.type}"></td>     
+                                    <td data-th-text="${person.phone}"></td>
+                                    <td data-th-text="${person.email}"></td>
                                 </tr>
                             </tbody>
                           </table>
                         </div>                    
                       </div>
-                      <!--END FORM OR TABLE -->
+            
                   </div>   
         
         </section>   
+         
 
       </div>
       <!-- END CENTRAL BODY -->

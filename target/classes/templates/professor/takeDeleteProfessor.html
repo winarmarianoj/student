@@ -58,17 +58,17 @@
             </a>
           </li>
           <li>
-            <a href="/admins/inscripciones">
+            <a href="/admins/share">
               <i class="tim-icons icon-bell-55"></i>
               <p>Inscription</p>
             </a>
           </li>
           <li>
-            <a href="/student/profileStudent">
+            <a href="/admins/ListStudent">
               <i class="tim-icons icon-single-02"></i>
               <p>Students</p>
             </a>
-          </li>          
+          </li>              
         </ul>
       </div>
     </div>
@@ -133,16 +133,17 @@
         
         	<!--Inicio de Solicitud de su Profile -->
             <div class="card card-plain">
-            	<form th:object="${professor}" th:action="@{/professor/sendIdDeleteProfessor}" method="POST">
+            	<form th:object="${takeid}" th:action="@{/professor/sendIdDeleteProfessor}" method="POST">
             	
           			<div class="form-group">
-                        <input th:field="*{personId}" type="text" id="id" name="id"
+          			    <label class="labels" for="num">Ingrese el ID del Profesor</label>
+                        <input th:field="*{num}" type="text" id="" name="num"
                             class="form-control form-control-sm bg-light" 
                             placeholder="PersonID" required="">
                     </div>                    
                         
                     <!-- BUTTON REGISTER BLUE -->
-                    <input type="submit" id="btnRegistrateAdmin" value="Send ID Professor Delete" class="btn btn-yellow"/>                                        	
+                    <input type="submit" id="" value="Send ID Professor Delete" class="btn btn-yellow"/>                                        	
             	</form>
             </div>
             <!--Fin de Solicitud de su Profile -->            

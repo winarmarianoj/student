@@ -2,8 +2,8 @@ package com.marianowinar.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.marianowinar.model.Account;
+import com.marianowinar.model.Users;
 
-public interface AccountRepository extends JpaRepository<Account, Long>{	
+public interface AccountRepository extends JpaRepository<Users, Long>{
 
 }

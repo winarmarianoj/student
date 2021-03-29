@@ -1,6 +1,6 @@
 package com.marianowinar.service.validator;
 
-import com.marianowinar.model.Account;
+import com.marianowinar.model.Users;
 import com.marianowinar.service.exception.account.NullAccountException;
 
 public class ValidAccount {
@@ -15,9 +15,8 @@ public class ValidAccount {
 		return validAccount;
 	}
 	
-	public boolean validCreateAccount(Account aco) throws NullAccountException{
-		boolean res = validName(aco.getDni());
-		res &= validName(aco.getLegajo());
+	public boolean validCreateAccount(Users aco) throws NullAccountException{
+		boolean res = validName(aco.getUsername());
 		
 		if(!res) {
 			throw new NullAccountException();
@@ -25,7 +24,7 @@ public class ValidAccount {
 		
 		return res;
 	}
-		
+	
 	private boolean validName(String name) {return name != null;}
 
 }

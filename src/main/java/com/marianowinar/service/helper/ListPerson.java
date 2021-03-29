@@ -5,17 +5,16 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.marianowinar.model.Material;
 import com.marianowinar.model.Person;
 import com.marianowinar.repository.PersonRepository;
 
 public class ListPerson {
+		
+	private List<Person> listPerson;
+	private Person per;
 	
-	@Autowired
-	private PersonRepository perRepo;
-	
-	List<Person> listPerson;
-	
-	public ListPerson() {}
+	public ListPerson() {this.per = new Person();}
 	
 	// METHODS AND FUNCTION GAME LIST	
 
@@ -47,6 +46,26 @@ public class ListPerson {
 	        listPerson.remove(index);
 	        return true;
 	    }	
+	    
+	    public Person searchPerDNI(String dni) {			
+			for(Person ele : listPerson) {
+				if(ele.getDni().equals(dni)){
+					this.per = ele;
+				}
+			}
+			return this.per;
+		}
+	    
+	    public boolean removePerName(String dni) {
+	    	boolean res = false;
+			for(Person ele : listPerson) {
+				if(ele.getDni().equals(dni)) {
+					removePerson(ele.getPersonId());
+					res = true;
+				}
+			}
+			return res;
+		}
 	
 
 }

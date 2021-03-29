@@ -6,15 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.marianowinar.model.Material;
-import com.marianowinar.model.Person;
-import com.marianowinar.model.Professor;
-import com.marianowinar.model.forms.Profmaterial;
 import com.marianowinar.model.forms.Takeid;
 import com.marianowinar.repository.MaterialRepository;
 import com.marianowinar.service.exception.material.InvalidCapacityMaterialException;
 import com.marianowinar.service.exception.material.InvalidNameMaterialException;
-import com.marianowinar.service.exception.person.InvalidMailException;
-import com.marianowinar.service.exception.person.InvalidNamesPersonException;
 import com.marianowinar.service.logger.Errors;
 import com.marianowinar.service.validator.ValidMaterial;
 
@@ -104,10 +99,10 @@ public class MaterialService implements Services<Material>{
 	 * para agregar la materia a la lista de un 
 	 * objeto professor
 	 */
-	public Material searchingMaterial(Profmaterial entity) {
+	public Material searchingMaterial(String mat) {
 		List<Material> listMat = viewAll();
 		for(Material ele : listMat) {
-			if(ele.getName().equals(entity.getNameMaterial())) {
+			if(ele.getName().equals(mat)) {
 				this.material = ele;
 			}
 		}
@@ -135,7 +130,7 @@ public class MaterialService implements Services<Material>{
 		List<Material> listMat = viewAll();
 		for(Material ele : listMat) {
 			if(ele.getId() == entity.getId()) {
-				ele = entity;
+				update(entity);
 				res = true;
 			}
 		}
@@ -164,5 +159,21 @@ public class MaterialService implements Services<Material>{
 			}
 		}
 		return this.material;
+	}
+
+	public boolean createMaterial(Material entity) {
+		boolean res = false;
+		if(!searchMaterial(entity)) {
+			if(create(entity)) res = true;
+		}
+		return res;
+	}
+
+	public boolean deleteMaterial(Takeid entity) {
+		boolean res = false;
+		Material aux = searchMaterialName(entity.getNameMaterial());
+		if(delete(aux.getId())) res = true;
+		
+		return res;
 	}
 }

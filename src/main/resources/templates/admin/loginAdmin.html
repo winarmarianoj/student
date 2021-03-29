@@ -24,7 +24,7 @@
                 </div>
 
                 <!--INICIO DEL FORMULARIO-->
-                <form id="formLogin" th:object="${account}" th:action="@{/admins/login}" method="POST">                    
+                <form id="formLogin" th:object="${register}" th:action="@{/admins/login}" method="POST">                    
 
                     <div class="form-group">
                         <input th:field="*{dni}" type="text" id="dni" name="dni"
@@ -44,7 +44,7 @@
                             placeholder="Contraseña" required="">
                     </div>
                     
-                    <input type="submit" id="btnLoginAdmin" value="Inicio de Sesion" class="btn btn-sm btn-warning col"/> <!-- onclick="formLogin(btnLoginAdmin)" -->                    
+                    <input type="submit" id="btnLoginAdmin" value="Inicio de Sesion" onclick="formLogin(btnLoginAdmin)" class="btn btn-sm btn-warning col"/>                     
 
                     <div class="text-center mt-2">
                         <a th:href="@{/forgot/forgot}" class="text-warning">Olvidaste tu contraseña?</a>
@@ -78,13 +78,7 @@
         </section>
 
     </main>
-
-    <footer></footer>
-    <!-- 
-    <script src="js/login.js"></script>
-    <script src="js/uiFunctions.js"></script>
-    <script src="js/uiMessages.js"></script>
-     -->
+    
     
     <script src="js/requeridos/jquery-3.3.1.min.js"></script>
     <script src="js/requeridos/popper.min.js"></script>

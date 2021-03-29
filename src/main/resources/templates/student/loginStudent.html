@@ -24,7 +24,7 @@
                 </div>
 
                 <!--INICIO DEL FORMULARIO-->
-                <form id="formLogin" th:object="${account}" th:action="@{/student/login}" method="POST">                    
+                <form id="formLogin" th:object="${register}" th:action="@{/student/login}" method="POST">                    
 
                     <div class="form-group">
                         <input th:field="*{dni}" type="text" id="dni" name="dni"

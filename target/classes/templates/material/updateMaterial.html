@@ -58,17 +58,17 @@
             </a>
           </li>
           <li>
-            <a href="/admins/inscripciones">
+            <a href="/admins/share">
               <i class="tim-icons icon-bell-55"></i>
               <p>Inscription</p>
             </a>
           </li>
           <li>
-            <a href="/student/profileStudent">
+            <a href="/admins/ListStudent">
               <i class="tim-icons icon-single-02"></i>
               <p>Students</p>
             </a>
-          </li>          
+          </li>              
         </ul>
       </div>
     </div>
@@ -168,7 +168,7 @@
                                 </div>                                
 
                                 <!-- BUTTON REGISTER BLUE -->
-                                <input type="submit" id="btnCreateProfessor" value="Professor Data Change" class="btn btn-success"/>  
+                                <input type="submit" id="" value="Material Data Change" class="btn btn-success"/>  
                                 
                                 
                                 <a th:href="@{/material/materialControlPanel}" type="button" class="btn btn-primary ml-5">Return Material Control Panel</a>
@@ -179,6 +179,45 @@
                     </div>
                     <!--END DATA-->
                       
+        </section>
+        
+        <section class="col-12 offset-fixed my-4">
+        
+        	<div class="row">
+                    
+                      <!-- INIT TABLE -->
+                      <div class="col-md-12 col-md-offset-2">
+                        <div class="description">
+                          <h2>LISTADO DE MATERIAS</h2>
+                        </div>
+                        
+                        <div class="fresh-table full-color-red">
+                        <!-- full-color-blue, full-color-azure, full-color-green, full-color-red, full-color-orange-->
+                          
+                          <table id="fresh-table" class="table">
+                            <thead>
+                              <th>NAME</th>
+                              <th>HOUR</th>
+                              <th>CAPACITY</th>
+                              <th>SUBSCRIBED</th>
+                              <th>DETAIL</th>
+
+                            </thead>
+                            <tbody>
+                                <tr data-th-each="material : ${materials}">
+                                    <td data-th-text="${material.name}"></td>
+                                    <td data-th-text="${material.hour}"></td>
+                                    <td data-th-text="${material.capacity}"></td>
+                                    <td data-th-text="${material.subscribed}"></td>
+                                    <td data-th-text="${material.detail}"></td>
+                                </tr>
+                            </tbody>
+                          </table>
+                        </div>                    
+                      </div>
+                      <!--END FORM OR TABLE -->
+                  </div>
+        
         </section>
 
       </div>

@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.marianowinar.model.forms.Forgot;
 import com.marianowinar.service.application.PersonService;
@@ -29,21 +28,16 @@ public class ForgotController {
     }
 	
 	@PostMapping(value = "/changeForgot")
-	public String changeForgot(@ModelAttribute Forgot entity, BindingResult result, RedirectAttributes redirectAttrs) throws InvalidPasswordAccountException {
-		String destiny = "";
-		
+	public String changeForgot(@ModelAttribute Forgot entity, BindingResult result) throws InvalidPasswordAccountException {
+		String destiny = "";		
 		if(result.hasErrors()) {
 			destiny= "redirect:forgot/forgot";
 		}else {
 			if(perServ.changePasswordPerson(entity)) {
-				redirectAttrs
-					.addFlashAttribute("mensage", "Password change correct!")
-					.addFlashAttribute("clase", "success");
+				
 				destiny = "redirect:index"; 
 			}else {
-				redirectAttrs
-				.addFlashAttribute("mensage", "Password incorrect!")
-				.addFlashAttribute("clase", "failed");
+				
 				destiny = "redirect:forgot/forgot";
 			}
 		}

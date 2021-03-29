@@ -58,17 +58,17 @@
             </a>
           </li>
           <li>
-            <a href="/admins/inscripciones">
+            <a href="/admins/share">
               <i class="tim-icons icon-bell-55"></i>
               <p>Inscription</p>
             </a>
           </li>
           <li>
-            <a href="/student/profileStudent">
+            <a href="/admins/ListStudent">
               <i class="tim-icons icon-single-02"></i>
               <p>Students</p>
             </a>
-          </li>          
+          </li>             
         </ul>
       </div>
     </div>
@@ -131,13 +131,13 @@
         
         	<!--Inicio de Solicitud de su Profile -->
             <div class="card card-plain">
-            	<form th:object="${material}" th:action="@{/material/sendIdChangeMaterial}" method="POST">
+            	<form th:object="${takeid}" th:action="@{/material/sendIdChangeMaterial}" method="POST">
             	
           			<div class="form-group">
-          			    <label class="labels" for="name">Nombre de la Materia a Cambiar</label>
-                        <input th:field="*{name}" type="text" id="name" name="name"
+          			    <label class="labels" for="nameMaterial">Nombre de la Materia a Cambiar</label>
+                        <input th:field="*{nameMaterial}" type="text" id="" name="nameMaterial"
                             class="form-control form-control-sm bg-light" 
-                            placeholder="Name" required="">
+                            placeholder="nameMaterial" required="">
                     </div>                    
                         
                     <!-- BUTTON REGISTER BLUE -->

@@ -1,6 +1,8 @@
 package com.marianowinar.controller;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,11 +11,13 @@ import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.marianowinar.model.Material;
 import com.marianowinar.model.Person;
+import com.marianowinar.model.Professor;
 import com.marianowinar.model.forms.Profmaterial;
 import com.marianowinar.model.forms.Takeid;
 import com.marianowinar.service.application.MaterialService;
@@ -28,11 +32,22 @@ public class MaterialController implements Controllerss<Material>{
 	
 	@Autowired
 	private MaterialService matServ;
+	
+	/*
+	 * Respuestas a lo largo de sus operaciones
+	 */
+	@GetMapping("/responseMaterial")
+	public String getResponse(ModelMap mp) {
+		List<Takeid> list = new ArrayList<>();
+		list.add(this.takeid);
+		mp.put("takeids", list);
+        return "/material/respMaterial";
+	}
 
 	@Override
 	@GetMapping("/materialControlPanel")
 	public String getControlPanel(ModelMap mp) {
-		mp.put("materials", matServ.viewAll());
+		mp.put("materials", matOrdenar());
 		return "/material/materialControlPanel";
 	}
 
@@ -46,14 +61,18 @@ public class MaterialController implements Controllerss<Material>{
 	@Override
 	@GetMapping("/takeIdChangeMaterial")
 	public String getIdChange(Model model, ModelMap mp) {
-		model.addAttribute("material", new Material());
-		mp.put("materials", matServ.viewAll());
+		model.addAttribute("takeid", new Takeid());
+		mp.put("materials", matOrdenar());
 		return "/material/takeChangeMaterial";
 	}
 
 	@Override
 	@GetMapping("/updateMaterial")
-	public String getUpdate(Model model) {
+	public String getUpdate(Model model, ModelMap mp) {
+		Material material = matServ.searchingMaterial(this.takeid.getNameMaterial());
+		List<Material> list = new ArrayList<>();
+		list.add(material);
+		mp.put("materials", list);
 		model.addAttribute("material", new Material());
 		return "/material/updateMaterial";
 	}
@@ -61,8 +80,8 @@ public class MaterialController implements Controllerss<Material>{
 	@Override
 	@GetMapping("/takeIdDeleteMaterial")
 	public String getIdDelete(Model model, ModelMap mp) {
-		model.addAttribute("material", new Material());
-		mp.put("materials", matServ.viewAll());
+		model.addAttribute("takeid", new Takeid());
+		mp.put("materials", matOrdenar());
 		return "/material/takeDeleteMaterial";
 	}
 
@@ -82,46 +101,42 @@ public class MaterialController implements Controllerss<Material>{
 	@GetMapping("/takeNameListMaterialProfessor")
 	public String getIdNameListProfMat(Model model, ModelMap mp) {
 		model.addAttribute("takeid", new Takeid());
-		mp.put("materials", matServ.viewAll());
+		mp.put("materials", matOrdenar());
 		return "/material/takeNameListMaterialProfessor";
 	}
 	
 	@Override
 	@GetMapping("/matListProf")
 	public String getListProfMat(Model model, ModelMap mp) {
-		Material material = matServ.searchNameMaterial(this.takeid);		
-		List<Person> listProf = material.getListPerson();
-		mp.put("persons", listProf);
+		Material material = matServ.searchMaterialName(this.takeid.getNameMaterial());
+		mp.put("persons", profOrdenarMat(material));
 		
 		List<Material> list = new ArrayList<>();
 		list.add(material);		
 		mp.put("materials", list);		
 		return "/material/matListProf";
 	}
-	
 
 	/*
 	 * CREATE MATERIAL
 	 */
 	@Override
 	@PostMapping(value = "/registerMaterial")
-	public String postRegister(Material entity, BindingResult result) {
+	public String postRegister(@ModelAttribute Material entity, BindingResult result) {
         String destiny = "";
 		
 		if(result.hasErrors()) {
 			destiny= "redirect:/material/createMaterial";
-		}else {
-			
-			if(!matServ.searchMaterial(entity)) {
-				if(matServ.create(entity)) {
-					destiny = "redirect:/material/materialControlPanel";
-				}else {
-					destiny = "redirect:/material/createMaterial";
-				}
-				
-			}else {
-				destiny = "redirect:/professor/createProfessor";
-			}
+		}else {			
+			if(matServ.createMaterial(entity)) {
+				//destiny = "redirect:/material/materialControlPanel";
+	        	this.takeid.setText("Los cambios en la cuenta del Profesor fueron correctos!!");
+				destiny = "redirect:/material/responseMaterial";
+	        }else {
+	        	//destiny = "redirect:/material/createMaterial";
+	        	this.takeid.setText("Datos erróneos vuelva a intentarlo.");
+	        	destiny = "redirect:/material/responseMaterial";
+	        }
 		}
 		return destiny;
 	}
@@ -131,13 +146,12 @@ public class MaterialController implements Controllerss<Material>{
 	 */
 	@Override
 	@PostMapping(value = "/sendIdChangeMaterial")
-	public String postTakeChangeProfile(Material entity, BindingResult result, ModelMap mp) {
+	public String postTakeChangeProfile(@ModelAttribute Takeid entity, BindingResult result, ModelMap mp) {
 		String destiny = "";
 	    if(result.hasErrors()){		        
 	        destiny = "redirect:/material/materialControlPanel";
 	    }else{
-	        Material material = matServ.searchNameMaterial(entity);		        
-	        mp.put("material", material);
+	        this.takeid.setNameMaterial(entity.getNameMaterial());
 	        destiny = "redirect:/material/updateMaterial";
 	    }
 	    return destiny;
@@ -148,15 +162,19 @@ public class MaterialController implements Controllerss<Material>{
 	 */
 	@Override
 	@PostMapping(value = "/changeMaterial")
-	public String postChangeProfile(Material entity, BindingResult result) {
+	public String postChangeProfile(@ModelAttribute Material entity, BindingResult result) {
 		String destiny = "";
 		if(result.hasErrors()){		        
 	        destiny = "redirect:/material/materialControlPanel";
-	    }else{
-	        if(matServ.changeMaterial(entity)) {
-	        	destiny = "redirect:/material/materialControlPanel";
+	    }else{	    	
+	    	if(matServ.changeMaterial(entity)) {
+				//destiny = "redirect:/material/materialControlPanel";
+	        	this.takeid.setText("Los cambios en la Materia fueron correctos!!");
+				destiny = "redirect:/material/responseMaterial";
 	        }else {
-	        	destiny = "redirect:/material/takeChangeMaterial";
+	        	//destiny = "redirect:/material/takeChangeMaterial";
+	        	this.takeid.setText("Datos erróneos vuelva a intentarlo.");
+	        	destiny = "redirect:/material/responseMaterial";
 	        }
 	    }
 	    return destiny;
@@ -164,14 +182,19 @@ public class MaterialController implements Controllerss<Material>{
 
 	@Override
 	@PostMapping(value = "/sendIdDeleteMaterial")
-	public String postDeleteProfile(Material entity, BindingResult result) {
+	public String postDeleteProfile(@ModelAttribute Takeid entity, BindingResult result) {
 		String destiny = "";
 	    if(result.hasErrors()){		        
 	        destiny = "redirect:/material/takeIdDeleteMaterial";
 	    }else{
-	    	Material material = matServ.searchNameMaterial(entity);	
-	        matServ.delete(material.getId());
-	        destiny = "redirect:/material/materialControlPanel";
+	    	if(matServ.deleteMaterial(entity)) {
+				//destiny = "redirect:/material/materialControlPanel";
+	        	this.takeid.setText("Ha sido eliminada correctamente la Materia!!");
+	        	destiny = "redirect:/material/responseMaterial";
+	        }else {
+	        	this.takeid.setText("Datos erróneos vuelva a intentarlo.");
+	        	destiny = "redirect:/material/responseMaterial";
+	        }
 	    }
 	    return destiny;
 	}
@@ -198,7 +221,7 @@ public class MaterialController implements Controllerss<Material>{
 	    if(result.hasErrors()){		        
 	        destiny = "redirect:/material/takeNameListMaterialProfessor";
 	    }else{
-	    	this.takeid.setText(entity.getText());	
+	    	this.takeid.setNameMaterial(entity.getNameMaterial());
 	        destiny = "redirect:/material/matListProf";
 	    }
 	    return destiny;
@@ -215,8 +238,24 @@ public class MaterialController implements Controllerss<Material>{
 		this.takeid = takeid;
 	}
 	
+	private List<Material> matOrdenar(){
+		List<Material> list = matServ.viewAll();
+		Collections.sort(list, new Comparator<Material>() {
+			   public int compare(Material obj1, Material obj2) {
+				   return obj1.getName().compareTo(obj2.getName());
+			   }
+			});
+		return list;
+	}
 	
-	
-	
-	
+
+	private Object profOrdenarMat(Material material) {
+		List<Person> list = material.getListPerson();
+		Collections.sort(list, new Comparator<Person>() {
+			   public int compare(Person obj1, Person obj2) {
+				   return obj1.getName().compareTo(obj2.getName());
+			   }
+			});
+		return list;
+	}
 }
