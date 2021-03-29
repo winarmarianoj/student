@@ -172,10 +172,7 @@ public class AdminController implements Controllers{
 			destiny= "redirect:/admins/responseCreate";
 		}else{	
 			if(perServ.login(entity)) {
-				//Person admin = perServ.searchPersonDni(entity.getDni());
-				//list.addPerson(admin);
 				this.takeid.setText(entity.getDni());
-				//this.takeid.setText("Se ha logueado correctamente. Puede ingresar al Sitio presionando el botón a su Perfil.");
 				destiny= "redirect:/admins/profileAdmin";
 			}else {
 				this.takeid.setText("Ha ingresado datos erróneos, vuelva a intentarlo.");
@@ -214,8 +211,7 @@ public class AdminController implements Controllers{
 			if(perServ.changeProfileAdmin(entity)) {
 				this.takeid.setText("Los Cambios en su cuenta fueron correctos.");
 				destiny= "redirect:/admins/response";
-			}else {				
-				//destiny = "redirect:/admins/updateAdmin";
+			}else {		
 				this.takeid.setText("Incorrectos los Cambios realizados o la información ingresada es incorrecta. Vuelva a intentarlo.");
 				destiny= "redirect:/admins/response";
 			}		
@@ -238,7 +234,6 @@ public class AdminController implements Controllers{
 				this.takeid.setText("La Cuenta fue eliminada con éxito.");
 				destiny= "redirect:/admins/response";				
 			}else {
-				//destiny= "redirect:/admins/profileAdmin";
 				this.takeid.setText("No pudo ser eliminada la cuenta, intente nuevamente.");
 				destiny= "redirect:/admins/response";
 			}

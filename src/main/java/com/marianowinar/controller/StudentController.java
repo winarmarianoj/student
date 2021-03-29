@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 
 import javax.servlet.ServletException;
 
@@ -166,11 +164,9 @@ public class StudentController implements Controllers{
 			destiny= "redirect:/student/registerStudent";
 		}else {
 			if(perServ.createStudent(entity)) {
-				//destiny = "redirect:/student/loginForm";
 				this.takeid.setText("La Cuenta se ha creado satisfactoriamente. Puede loguearse!!! Bienvenido al Sitio");
 				destiny = "redirect:/student/responseCreate";
 			}else {
-				//destiny = "redirect:/student/registerStudent";
 				this.takeid.setText("Ha cargado datos erróneos, vuelva a intentarlo.");
 				destiny = "redirect:/student/responseCreate";
 			}	
@@ -192,11 +188,7 @@ public class StudentController implements Controllers{
 		    destiny= "redirect:/student/responseCreate";
 		}else{		
 			if(perServ.login(entity)) {
-				//destiny = "redirect:/student/profileStudent";
-				//Person student = perServ.searchPersonDni(entity.getDni());
-				//list.addPerson(student);
-				this.takeid.setText(entity.getDni());			
-				//this.takeid.setText("Se ha logueado correctamente. Puede ingresar al Sitio presionando el botón a su Perfil.");
+				this.takeid.setText(entity.getDni());
 				destiny = "redirect:/student/profileStudent";
 			}else {
 				this.takeid.setText("Ha cargado datos erróneos, vuelva a intentarlo.");
@@ -234,11 +226,9 @@ public class StudentController implements Controllers{
 		}else{
 			
 			if(perServ.changeProfileStudent(entity)) {
-				//destiny = "redirect:/student/profileStudent";
 				this.takeid.setText("Los Cambios en su cuenta fueron correctos.");
 				destiny= "redirect:/student/response";
 			}else {				
-				//destiny= "redirect:/student/updateStudent";
 				this.takeid.setText("Incorrectos los Cambios realizados o la información ingresada es incorrecta. Vuelva a intentarlo.");
 				destiny= "redirect:/student/response";
 			}
@@ -261,7 +251,6 @@ public class StudentController implements Controllers{
 				this.takeid.setText("La Cuenta fue eliminada con éxito.");
 				destiny= "redirect:/student/response";
 			}else {
-				//destiny= "redirect:/admins/profileAdmin";
 				this.takeid.setText("No pudo ser eliminada la cuenta, intente nuevamente.");
 				destiny= "redirect:/student/response";
 			}
@@ -299,7 +288,6 @@ public class StudentController implements Controllers{
 			destiny = "redirect:/student/profileStudent";
 		}else{				
 			if(perServ.inscription(entity)) {
-				//destiny = "redirect:/";
 				this.takeid.setText("Su inscripción a la materia ha sido aceptada y se realizó correctamente!!");
 				destiny= "redirect:/student/responseInscription";
 			}else {
@@ -320,7 +308,6 @@ public class StudentController implements Controllers{
 			destiny = "redirect:/student/profileStudent";
 		}else{				
 			if(perServ.unsubscribed(entity)) {
-				//destiny = "redirect:/";
 				this.takeid.setText("Su desuscripción a la materia ha sido aceptada y se realizó correctamente!!");
 				destiny= "redirect:/student/responseInscription";
 			}else {

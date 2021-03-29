@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.marianowinar.model.Material;
 import com.marianowinar.model.Person;
-import com.marianowinar.model.Professor;
 import com.marianowinar.model.forms.Profmaterial;
 import com.marianowinar.model.forms.Takeid;
 import com.marianowinar.service.application.MaterialService;
@@ -129,11 +128,9 @@ public class MaterialController implements Controllerss<Material>{
 			destiny= "redirect:/material/createMaterial";
 		}else {			
 			if(matServ.createMaterial(entity)) {
-				//destiny = "redirect:/material/materialControlPanel";
 	        	this.takeid.setText("Los cambios en la cuenta del Profesor fueron correctos!!");
 				destiny = "redirect:/material/responseMaterial";
 	        }else {
-	        	//destiny = "redirect:/material/createMaterial";
 	        	this.takeid.setText("Datos erróneos vuelva a intentarlo.");
 	        	destiny = "redirect:/material/responseMaterial";
 	        }
@@ -168,11 +165,9 @@ public class MaterialController implements Controllerss<Material>{
 	        destiny = "redirect:/material/materialControlPanel";
 	    }else{	    	
 	    	if(matServ.changeMaterial(entity)) {
-				//destiny = "redirect:/material/materialControlPanel";
 	        	this.takeid.setText("Los cambios en la Materia fueron correctos!!");
 				destiny = "redirect:/material/responseMaterial";
 	        }else {
-	        	//destiny = "redirect:/material/takeChangeMaterial";
 	        	this.takeid.setText("Datos erróneos vuelva a intentarlo.");
 	        	destiny = "redirect:/material/responseMaterial";
 	        }
@@ -188,7 +183,6 @@ public class MaterialController implements Controllerss<Material>{
 	        destiny = "redirect:/material/takeIdDeleteMaterial";
 	    }else{
 	    	if(matServ.deleteMaterial(entity)) {
-				//destiny = "redirect:/material/materialControlPanel";
 	        	this.takeid.setText("Ha sido eliminada correctamente la Materia!!");
 	        	destiny = "redirect:/material/responseMaterial";
 	        }else {

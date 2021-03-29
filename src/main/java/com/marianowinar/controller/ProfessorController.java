@@ -140,11 +140,9 @@ public class ProfessorController implements Controllerss<Professor>{
 		}else {
 			if(!profServ.searchProfessor(entity)) {
 				if(profServ.create(entity)) {
-					//destiny = "redirect:/professor/professorControlPanel";
 					this.takeid.setText("Su cuenta ha sido creada correctamente.!!");
 					destiny = "redirect:/professor/responseProfessor";
 				}else {
-					//destiny = "redirect:/professor/createProfessor";
 					this.takeid.setText("Hubo un error en la carga de su cuenta o datos erróneos");
 					destiny = "redirect:/professor/responseProfessor";
 				}
@@ -184,11 +182,9 @@ public class ProfessorController implements Controllerss<Professor>{
 	        destiny = "redirect:/professor/professorControlPanel";
 	    }else{
 	        if(profServ.changeProfessor(entity)) {
-	        	//destiny = "redirect:/professor/professorControlPanel";
 	        	this.takeid.setText("Los cambios en la cuenta del Profesor fueron correctos!!");
 	        	destiny = "redirect:/professor/responseProfessor";
 	        }else {
-	        	//destiny = "redirect:/professor/takeChangeProfessor";
 	        	this.takeid.setText("Datos erróneos vuelva a intentarlo.");
 	        	destiny = "redirect:/professor/responseProfessor";
 	        }
@@ -208,11 +204,9 @@ public class ProfessorController implements Controllerss<Professor>{
 	        destiny = "redirect:/professor/takeIdDeleteProfessor";
 	    }else{
 	    	if(profServ.delete(entity.getNum())) {
-	        	//destiny = "redirect:/professor/professorControlPanel";
 	        	this.takeid.setText("La cuenta del Profesor fue eliminada correctamente!!");
 	        	destiny = "redirect:/professor/responseProfessor";
 	        }else {
-	        	//destiny = "redirect:/professor/takeChangeProfessor";
 	        	this.takeid.setText("Datos erróneos vuelva a intentarlo.");
 	        	destiny = "redirect:/professor/responseProfessor";
 	        }
@@ -232,11 +226,9 @@ public class ProfessorController implements Controllerss<Professor>{
 	        destiny = "redirect:/professor/takeIdAddMaterialProfessor";
 	    }else{
 	        if(profServ.addMatProf(entity)) {
-	        	//destiny = "redirect:/professor/professorControlPanel";
 	        	this.takeid.setText("La Materia fue Agregada a la lista del Profesor correctamente!!");
 	        	destiny = "redirect:/professor/responseProfessor";
 	        }else {
-	        	//destiny = "redirect:/professor/takeIdAddMaterialProfessor";
 	        	this.takeid.setText("Datos erróneos vuelva a intentarlo.");
 	        	destiny = "redirect:/professor/responseProfessor";
 	        }	        
@@ -256,11 +248,9 @@ public class ProfessorController implements Controllerss<Professor>{
 	    }else{
 	    	
 	    	if(profServ.deleteMatProf(entity)) {
-	        	//destiny = "redirect:/professor/professorControlPanel";
 	        	this.takeid.setText("La Materia fue Eliminada de la lista del Profesor correctamente!!");
 	        	destiny = "redirect:/professor/responseProfessor";
 	        }else {
-	        	//destiny = "redirect:/professor/takeIdDeleteMaterialProfessor";
 	        	this.takeid.setText("Datos erróneos vuelva a intentarlo.");
 	        	destiny = "redirect:/professor/responseProfessor";
 	        }

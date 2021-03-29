@@ -139,9 +139,7 @@ public class PersonService implements Services<Person>{
 			errors.logError(e.getMessage());						
 		}		
 		return res;
-	}	
-	
-	
+	}		
 	
 	/*
 	 * Busca si la persona existe o no y devuelve un booleano
